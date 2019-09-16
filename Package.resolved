@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "VoteKit",
+        "repositoryURL": "https://github.com/Unicus-International/voting-booth-VoteKit",
+        "state": {
+          "branch": null,
+          "revision": "ffb451109b29cad7fbd56c38aa61c92d3c3aff3d",
+          "version": "0.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
