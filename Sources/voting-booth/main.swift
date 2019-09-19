@@ -9,6 +9,8 @@ import VotingBooth
 let election = Election("Do it!", question: "Should we do it?")
 election.addBallot(named: "Do it?", with: Candidate(named: "Yes"), Candidate(named: "No"))
 
+election.generateFranchises(30)
+
 var routes = Routes()
 
 let encoder = JSONEncoder()
