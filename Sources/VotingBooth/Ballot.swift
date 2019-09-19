@@ -6,3 +6,11 @@ public struct Ballot: Codable {
 
   let candidates: [Candidate]
 }
+
+public extension Election {
+
+  var ballotMap: [UUID:Ballot] {
+    return Dictionary(uniqueKeysWithValues: ballots.lazy.map { ($0.identifier, $0) })
+  }
+
+}

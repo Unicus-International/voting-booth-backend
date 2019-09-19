@@ -11,6 +11,8 @@ election.addBallot(named: "Do it?", with: Candidate(named: "Yes"), Candidate(nam
 election.generateFranchises(30)
 
 let franchises = election.franchiseMap
+let ballots = election.ballotMap
+let candidates = election.candidateMap
 
 let encoder = JSONEncoder()
 encoder.outputFormatting = [.prettyPrinted, .sortedKeys]

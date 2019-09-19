@@ -8,3 +8,11 @@ public struct Candidate: Codable {
     self.name = name
   }
 }
+
+public extension Election {
+
+  var candidateMap: [UUID:Candidate] {
+    return Dictionary(uniqueKeysWithValues: candidates.lazy.map { ($0.identifier, $0) })
+  }
+
+}
