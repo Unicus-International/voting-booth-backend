@@ -17,7 +17,7 @@ routes.add(method: .get, uri: "/vote/{franchise}") {
 
   let franchise: String! = request.urlVariables["franchise"]
 
-  let rdata = try! encoder.encode(election)
+  let rdata = try! encoder.encode(["election": election])
   let rbody: String! = String(data: rdata, encoding: .utf8)
 
   response
@@ -38,7 +38,7 @@ routes.add(method: .post, uri: "/vote/{franchise}") {
     return
   }
 
-  if let vote = try? decoder.decode(Vote.self, from: bodyData) {
+  if let _ = try? decoder.decode(Vote.self, from: bodyData) {
     response
       .setHeader(.contentType, value: "application/json")
       .appendBody(string: "Spoon!")
