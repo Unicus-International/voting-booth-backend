@@ -12,11 +12,14 @@ election.generateFranchises(30)
 
 let franchises = election.franchiseMap
 
-var routes = Routes()
-
 let encoder = JSONEncoder()
 encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
 
+let decoder = JSONDecoder()
+
+var routes = Routes()
+
+#if DEBUG
 routes.add(method: .get, uri: "/debug/franchises") {
   request, response in
 
@@ -25,6 +28,7 @@ routes.add(method: .get, uri: "/debug/franchises") {
     .appendBody(string: String(data: try! encoder.encode(Array(franchises.keys)), encoding: .utf8)!)
     .completed()
 }
+#endif
 
 routes.add(method: .get, uri: "/vote/{franchise}") {
   request, response in
@@ -42,7 +46,6 @@ routes.add(method: .get, uri: "/vote/{franchise}") {
     .completed()
 }
 
-let decoder = JSONDecoder()
 routes.add(method: .post, uri: "/vote/{franchise}") {
   request, response in
 
