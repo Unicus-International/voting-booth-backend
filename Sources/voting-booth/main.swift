@@ -21,6 +21,15 @@ var routes = Routes()
 let encoder = JSONEncoder()
 encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
 
+routes.add(method: .get, uri: "/debug/franchises") {
+  request, response in
+
+  response
+    .setHeader(.contentType, value: "application/json")
+    .appendBody(string: String(data: try! encoder.encode(Array(franchises.keys)), encoding: .utf8)!)
+    .completed()
+}
+
 routes.add(method: .get, uri: "/vote/{franchise}") {
   request, response in
 
