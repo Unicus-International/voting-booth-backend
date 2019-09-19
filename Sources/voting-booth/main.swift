@@ -12,10 +12,6 @@ election.generateFranchises(30)
 
 let franchises = election.franchiseMap
 
-for pair in franchises {
-  print(pair)
-}
-
 var routes = Routes()
 
 let encoder = JSONEncoder()
