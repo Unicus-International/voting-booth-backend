@@ -1,4 +1,6 @@
+import Foundation
+
 public struct Vote: Codable {
-  let ballot: String
-  let candidates: [String]
+  let ballot: UUID
+  let candidates: [UUID]
 }

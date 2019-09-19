@@ -1,9 +1,10 @@
+import Foundation
+
 public struct Candidate: Codable {
-  let identifier: String
   let name: String
+  let identifier = UUID()
 
   public init(named name: String) {
-    self.identifier = ""
     self.name = name
   }
 }
