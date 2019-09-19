@@ -67,6 +67,10 @@ routes.add(method: .post, uri: "/vote/{franchise}") {
     return response.completed(status: .badRequest)
   }
 
+  guard franchise.election.castVote(vote) else {
+    return response.completed(status: .forbidden)
+  }
+
   response
     .completed(status: .noContent)
 }

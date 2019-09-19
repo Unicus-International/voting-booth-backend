@@ -36,3 +36,13 @@ public struct Vote {
     }
   }
 }
+
+public extension Election {
+
+  func castVote(_ vote: Vote) -> Bool {
+    self.votes[vote.franchise.identifier] = vote
+
+    return true
+  }
+
+}

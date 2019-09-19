@@ -1,3 +1,5 @@
+import Foundation
+
 public class Election: Encodable {
   var name: String
   var question: String
@@ -9,6 +11,7 @@ public class Election: Encodable {
   }
 
   var franchises: [Franchise] = []
+  var votes: [UUID:Vote] = [:]
 
   public init(_ name: String, question: String) {
     self.name = name
