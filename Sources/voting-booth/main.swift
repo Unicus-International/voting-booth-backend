@@ -1,7 +1,6 @@
 import PerfectHTTP
 import PerfectHTTPServer
 
-import PerfectLib
 import Foundation
 
 import VotingBooth
@@ -11,15 +10,25 @@ election.addBallot(named: "Do it?", with: Candidate(named: "Yes"), Candidate(nam
 
 election.generateFranchises(30)
 
+let franchises = election.franchiseMap
+
+for pair in franchises {
+  print(pair)
+}
+
 var routes = Routes()
 
 let encoder = JSONEncoder()
+encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+
 routes.add(method: .get, uri: "/vote/{franchise}") {
   request, response in
 
-  let franchise: String! = request.urlVariables["franchise"]
+  guard let franchise = request.urlVariables["franchise"].flatMap({ UUID(uuidString: $0) }).flatMap({ franchises[$0] }) else {
+    return response.completed(status: .notFound)
+  }
 
-  let rdata = try! encoder.encode(["election": election])
+  let rdata = try! encoder.encode(["election": franchise.election])
   let rbody: String! = String(data: rdata, encoding: .utf8)
 
   response
@@ -32,12 +41,12 @@ let decoder = JSONDecoder()
 routes.add(method: .post, uri: "/vote/{franchise}") {
   request, response in
 
-  let franchise: String! = request.urlVariables["franchise"]
-  guard let bodyData = request.postBodyString?.data(using: .utf8) else {
-    response
-      .completed(status: .badRequest)
+  guard let franchise = request.urlVariables["franchise"].flatMap({ UUID(uuidString: $0) }).flatMap({ franchises[$0] }) else {
+    return response.completed(status: .notFound)
+  }
 
-    return
+  guard let bodyData = request.postBodyString?.data(using: .utf8) else {
+    return response.completed(status: .badRequest)
   }
 
   if let _ = try? decoder.decode(Vote.self, from: bodyData) {
