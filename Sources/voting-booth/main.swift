@@ -57,15 +57,14 @@ routes.add(method: .post, uri: "/vote/{franchise}") {
     return response.completed(status: .badRequest)
   }
 
-  if let _ = try? decoder.decode(Vote.self, from: bodyData) {
-    response
-      .setHeader(.contentType, value: "application/json")
-      .appendBody(string: "Spoon!")
-      .completed()
-  } else {
-    response
-      .completed(status: .badRequest)
+  guard let voteData = try? decoder.decode(Vote.self, from: bodyData) else {
+    return response.completed(status: .badRequest)
   }
+
+  response
+    .setHeader(.contentType, value: "application/json")
+    .appendBody(string: "Spoon!")
+    .completed()
 }
 
 try HTTPServer.launch(
