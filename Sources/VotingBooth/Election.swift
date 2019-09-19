@@ -15,11 +15,17 @@ public class Election: Codable {
   }
 
   @discardableResult
-  public func addBallot(named name: String, with candidates: Candidate...) -> Ballot {
+  public func addBallot(named name: String, with candidates: [Candidate]) -> Ballot {
     let ballot = Ballot(name: name, candidates: candidates)
 
     self.ballots.append(ballot)
 
     return ballot
   }
+
+  @discardableResult
+  public func addBallot(named name: String, with candidates: Candidate...) -> Ballot {
+    return self.addBallot(named: name, with: candidates)
+  }
+
 }
