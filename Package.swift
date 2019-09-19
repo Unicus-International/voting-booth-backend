@@ -7,9 +7,10 @@ let package = Package(
   name: "voting-booth",
   dependencies: [
     .package(url: "https://github.com/Unicus-International/voting-booth-VoteKit", from: "0.0.0"),
+    .package(url: "https://github.com/PerfectlySoft/Perfect-HTTPServer.git", from: "3.0.0"),
   ],
   targets: [
-    .target(name: "VotingBooth", dependencies: ["VoteKit"]),
+    .target(name: "VotingBooth", dependencies: ["VoteKit", "PerfectHTTPServer"]),
     .target(name: "voting-booth", dependencies: ["VotingBooth"]),
     .testTarget(name: "VotingBoothTests", dependencies: ["VotingBooth"]),
   ]
