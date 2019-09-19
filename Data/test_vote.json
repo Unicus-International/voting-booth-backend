@@ -1,6 +1,8 @@
 {
-  "ballot": "a_ballot",
+  "//": "Values in this file need to be updated with current, generated UUIDs before uploading",
+  "//": "In a debug build, the system can be interrogated using /debug/franchises",
+  "ballot": "CEDCD1B1-D780-4365-8930-34567554CD2B",
   "candidates": [
-    "yes"
+    "EAE5FAF4-293A-4C8F-BC78-0A90B43B49F0"
   ]
 }
