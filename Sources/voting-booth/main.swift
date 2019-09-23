@@ -51,19 +51,19 @@ routes.add(method: .get, uri: "/vote/{franchise}") {
 routes.add(method: .post, uri: "/vote/{franchise}") {
   request, response in
 
-  guard let franchise = request.urlVariables["franchise"].flatMap({ UUID(uuidString: $0) }).flatMap({ franchises[$0] }) else {
+  guard
+    let franchise = request.urlVariables["franchise"]
+      .flatMap({ UUID(uuidString: $0) })
+      .flatMap({ franchises[$0] })
+  else {
     return response.completed(status: .notFound)
   }
 
-  guard let bodyData = request.postBodyString?.data(using: .utf8) else {
-    return response.completed(status: .badRequest)
-  }
-
-  guard let voteData = try? decoder.decode(Vote.CodingData.self, from: bodyData) else {
-    return response.completed(status: .badRequest)
-  }
-
-  guard let vote = Vote(with: voteData, franchise: franchise) else {
+  guard
+    let bodyData = request.postBodyString?.data(using: .utf8),
+    let voteData = try? decoder.decode(Vote.CodingData.self, from: bodyData),
+    let vote = Vote(with: voteData, franchise: franchise)
+  else {
     return response.completed(status: .badRequest)
   }
 
