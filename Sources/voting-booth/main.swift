@@ -67,12 +67,21 @@ routes.add(method: .post, uri: "/vote/{franchise}") {
     return response.completed(status: .badRequest)
   }
 
-  guard franchise.election.castVote(vote) else {
+  let (result, status) = franchise.election.castVote(vote)
+
+  guard result else {
     return response.completed(status: .forbidden)
   }
 
-  response
-    .completed(status: .noContent)
+  switch (status) {
+  case .voteUpdated:
+    return response
+      .completed(status: .noContent)
+
+  case .voteCast:
+    return response
+      .completed(status: .created)
+  }
 }
 
 try HTTPServer.launch(

@@ -39,10 +39,25 @@ public struct Vote {
 
 public extension Election {
 
-  func castVote(_ vote: Vote) -> Bool {
+  enum Returns {
+    case voteCast
+    case voteUpdated
+  }
+
+  func hasVoted(_ franchise: Franchise) -> Bool {
+    return (self.votes[franchise.identifier] != nil)
+  }
+
+  func castVote(_ vote: Vote) -> (Bool, Returns) {
+    let isUpdate = hasVoted(vote.franchise)
+
     self.votes[vote.franchise.identifier] = vote
 
-    return true
+    if (isUpdate) {
+      return (true, .voteUpdated)
+    } else {
+      return (true, .voteCast)
+    }
   }
 
 }
