@@ -50,7 +50,7 @@ public extension Election {
   }
 
   func castVote(_ vote: Vote) -> (Bool, Returns) {
-    if (!isOpen) {
+    guard self.isOpen else {
       return (false, .pollsClosed)
     }
 
