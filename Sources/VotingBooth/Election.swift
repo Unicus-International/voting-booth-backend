@@ -48,6 +48,10 @@ public class Election {
     return runs.contains(Date())
   }
 
+  public var canUpdate: Bool {
+    return true
+  }
+
   @discardableResult
   public func addBallot(named name: String, with candidates: [Candidate]) -> Ballot {
     let ballot = Ballot(name: name, candidates: candidates)

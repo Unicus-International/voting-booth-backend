@@ -43,6 +43,7 @@ public extension Election {
     case voteCast
     case voteUpdated
     case pollsClosed = "POLLS_CLOSED"
+    case updatesForbidden = "UPDATES_FORBIDDEN"
   }
 
   func hasVoted(_ franchise: Franchise) -> Bool {
@@ -55,6 +56,10 @@ public extension Election {
     }
 
     let isUpdate = hasVoted(vote.franchise)
+
+    guard !isUpdate || self.canUpdate else {
+      return (false, .updatesForbidden)
+    }
 
     self.votes[vote.franchise.identifier] = vote
 
