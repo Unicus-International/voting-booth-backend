@@ -10,9 +10,6 @@ import Foundation
 
 import VotingBooth
 
-User.defaultHashingFunction = hashPassword
-User.defaultSaltFunction = makeSalt
-
 let election = Election(
   "Do it!",
   question: "Should we do it?",

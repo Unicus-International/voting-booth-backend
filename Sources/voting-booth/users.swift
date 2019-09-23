@@ -27,7 +27,9 @@ func createUser(emailAddress: String, name: String? = nil, passwordOne: String, 
       emailAddress: emailAddress,
       name: name,
       passwordOne: passwordOne,
-      passwordTwo: passwordTwo
+      passwordTwo: passwordTwo,
+      saltFunction: makeSalt,
+      hashingFunction: hashPassword
     )
   else {
     return false

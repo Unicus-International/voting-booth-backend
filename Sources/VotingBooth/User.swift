@@ -1,9 +1,6 @@
 import Foundation
 
 public struct User: Codable {
-  public static var defaultSaltFunction: () -> String = { return "" }
-  public static var defaultHashingFunction: (String) -> String = { return $0 }
-
   let emailAddress: String
   let name: String?
   let passwordHash: String?
@@ -19,8 +16,8 @@ public struct User: Codable {
     name: String? = nil,
     passwordOne: String,
     passwordTwo: String,
-    saltFunction: () -> String = defaultSaltFunction,
-    hashingFunction hash: (String) -> String = defaultHashingFunction
+    saltFunction: () -> String = { "" },
+    hashingFunction hash: (String) -> String = { $0 }
   ) {
     guard passwordOne == passwordTwo else {
       return nil
@@ -34,7 +31,7 @@ public struct User: Codable {
 
   public func verifyPassword(
     _ password: String,
-    hashingFunction hash: (String) -> String = defaultHashingFunction
+    hashingFunction hash: (String) -> String = { $0 }
   ) -> Bool {
     guard let hashed = self.passwordHash else {
       return false
