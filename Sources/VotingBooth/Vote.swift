@@ -39,9 +39,10 @@ public struct Vote {
 
 public extension Election {
 
-  enum Returns {
+  enum Returns: String {
     case voteCast
     case voteUpdated
+    case pollsClosed = "POLLS_CLOSED"
   }
 
   func hasVoted(_ franchise: Franchise) -> Bool {
@@ -49,6 +50,10 @@ public extension Election {
   }
 
   func castVote(_ vote: Vote) -> (Bool, Returns) {
+    if (!isOpen) {
+      return (false, .pollsClosed)
+    }
+
     let isUpdate = hasVoted(vote.franchise)
 
     self.votes[vote.franchise.identifier] = vote

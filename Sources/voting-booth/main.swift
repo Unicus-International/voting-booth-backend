@@ -5,7 +5,12 @@ import Foundation
 
 import VotingBooth
 
-let election = Election("Do it!", question: "Should we do it?")
+let election = Election(
+  "Do it!",
+  question: "Should we do it?",
+  from: Date(timeIntervalSinceReferenceDate: 5.0e8),
+  to: Date(timeIntervalSinceReferenceDate: 6.0e8)
+)
 election.addBallot(named: "Do it?", with: Candidate(named: "Yes"), Candidate(named: "No"))
 
 election.generateFranchises(30)
@@ -39,7 +44,7 @@ routes.add(method: .get, uri: "/vote/{franchise}") {
     return response.completed(status: .notFound)
   }
 
-  let rdata = try! encoder.encode(["election": franchise.election])
+  let rdata = try! encoder.encode(["election": franchise.election.encodingData])
   let rbody: String! = String(data: rdata, encoding: .utf8)
 
   response
@@ -69,8 +74,9 @@ routes.add(method: .post, uri: "/vote/{franchise}") {
 
   let (result, status) = franchise.election.castVote(vote)
 
-  guard result else {
-    return response.completed(status: .forbidden)
+  if !result {
+    response
+      .setHeader(.contentType, value: "application/json")
   }
 
   switch (status) {
@@ -81,6 +87,11 @@ routes.add(method: .post, uri: "/vote/{franchise}") {
   case .voteCast:
     return response
       .completed(status: .created)
+
+  default:
+    return response
+      .appendBody(string: "{\"error\": \"ERROR_\(result)\"}")
+      .completed(status: .forbidden)
   }
 }
 
