@@ -9,7 +9,7 @@ func hashPassword(_ password: String) -> String {
 }
 
 func makeSalt() -> String {
-  let source = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  let source = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./"
 
   let range = 1...16
 
