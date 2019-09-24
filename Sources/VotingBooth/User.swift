@@ -33,6 +33,10 @@ public struct User: Codable {
     return emailAddress
   }
 
+  public var isRegisterable: Bool {
+    return passwordHash == nil
+  }
+
   public func verifyPassword(
     _ password: String,
     hashingFunction hash: (String) -> String = { $0 }

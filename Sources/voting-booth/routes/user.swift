@@ -1,4 +1,5 @@
 import PerfectHTTP
+
 import Foundation
 
 func userRoutes() -> Routes {
@@ -7,8 +8,39 @@ func userRoutes() -> Routes {
   userRoutes.add(method: .post, uri: "/register") {
     request, response in
 
+    guard
+      let name = request.param(name: "name"),
+      let username = request.param(name: "email_address"),
+      let passwordOne = request.param(name: "password_one"),
+      let passwordTwo = request.param(name: "password_two")
+    else {
+      return response
+        .setHeader(.contentType, value: "application/json")
+        .appendBody(string: #"{"error": "ERROR_MISSING_FIELD"}"#)
+        .completed(status: .badRequest)
+    }
+
+    guard getUser(emailAddress: username) == nil else {
+      return response
+        .completed(status: .forbidden)
+    }
+
+    guard username.isLikelyEmail else {
+      return response
+        .setHeader(.contentType, value: "application/json")
+        .appendBody(string: #"{"error": "ERROR_BAD_USERNAME"}"#)
+        .completed(status: .badRequest)
+    }
+
+    guard createUser(emailAddress: username, name: name, passwordOne: passwordOne, passwordTwo: passwordTwo) else {
+      return response
+        .setHeader(.contentType, value: "application/json")
+        .appendBody(string: #"{"error": "ERROR_PASSWORDS_DIFFER"}"#)
+        .completed(status: .badRequest)
+    }
+
     response
-      .completed(status: .internalServerError)
+      .completed(status: .created)
   }
 
   userRoutes.add(method: .post, uri: "/login") {

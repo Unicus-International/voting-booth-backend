@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
   name: "voting-booth",
+  platforms: [
+    .macOS(.v10_13),
+  ],
   dependencies: [
     .package(url: "https://github.com/Unicus-International/voting-booth-VoteKit", from: "0.0.0"),
     .package(url: "https://github.com/PerfectlySoft/Perfect-HTTPServer.git", from: "3.0.0"),
