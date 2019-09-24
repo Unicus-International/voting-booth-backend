@@ -40,3 +40,6 @@ func createUser(emailAddress: String, name: String? = nil, passwordOne: String, 
   return true
 }
 
+func loginUser(emailAddress: String, password: String) -> Bool {
+  return getUser(emailAddress: emailAddress)?.verifyPassword(password, hashingFunction: hashPassword) ?? false
+}

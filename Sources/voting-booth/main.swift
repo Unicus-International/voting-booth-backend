@@ -32,7 +32,11 @@ let decoder = JSONDecoder()
 var routes = Routes()
 
 #if DEBUG
-routes.add(method: .get, uri: "/debug/franchises") {
+assert(createUser(emailAddress: "testuser@unicus.no", passwordOne: "testuser", passwordTwo: "testuser"))
+
+var debugRoutes = Routes(baseUri: "/debug")
+
+debugRoutes.add(method: .get, uri: "/franchises") {
   request, response in
 
   response
@@ -40,7 +44,44 @@ routes.add(method: .get, uri: "/debug/franchises") {
     .appendBody(string: String(data: try! encoder.encode(Array(franchises.keys)), encoding: .utf8)!)
     .completed()
 }
+
+routes.add(debugRoutes)
 #endif
+
+var userRoutes = Routes(baseUri: "/user")
+
+userRoutes.add(method: .post, uri: "/register") {
+  request, response in
+
+  response
+    .completed(status: .internalServerError)
+}
+
+userRoutes.add(method: .post, uri: "/login") {
+  request, response in
+
+  guard
+    let username = request.param(name: "email_address"),
+    let password = request.param(name: "password")
+  else {
+    return response.completed(status: .badRequest)
+  }
+
+  if loginUser(emailAddress: username, password: password) {
+    return response.completed(status: .noContent)
+  } else {
+    return response.completed(status: .forbidden)
+  }
+}
+
+userRoutes.add(method: .get, uri: "/logout") {
+  request, response in
+
+  response
+    .completed(status: .noContent)
+}
+
+routes.add(userRoutes)
 
 routes.add(method: .get, uri: "/vote/{franchise}") {
   request, response in
