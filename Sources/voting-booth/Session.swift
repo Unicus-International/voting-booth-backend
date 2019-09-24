@@ -1,8 +1,8 @@
 import Foundation
 
-fileprivate var sessions: [UUID:Session] = [:]
+var sessions: [UUID:Session] = [:]
 
-struct Session: Codable {
+class Session: Codable {
   let identifier: UUID = UUID()
   var parameters: [String:String] = [:]
 
@@ -10,7 +10,7 @@ struct Session: Codable {
     return self.parameters[key]
   }
 
-  mutating func set(_ value: String, for key: String) {
+  func set(_ value: String, for key: String) {
     self.parameters[key] = value
   }
 

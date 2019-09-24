@@ -22,7 +22,7 @@ func userRoutes() -> Routes {
     }
 
     if let user = loginUser(emailAddress: username, password: password) {
-      var session = Session()
+      let session = Session()
 
       session.set(user.identifier, for: "USER_IDENTIFIER")
 
