@@ -67,10 +67,17 @@ userRoutes.add(method: .post, uri: "/login") {
     return response.completed(status: .badRequest)
   }
 
-  if loginUser(emailAddress: username, password: password) {
-    return response.completed(status: .noContent)
+  if let user = loginUser(emailAddress: username, password: password) {
+    var session = Session()
+
+    session.set(user.identifier, for: "USER_IDENTIFIER")
+
+    return response
+      .addHeader(.custom(name: "X-Session-Id"), value: session.identifier.uuidString)
+      .completed(status: .noContent)
   } else {
-    return response.completed(status: .forbidden)
+    return response
+      .completed(status: .forbidden)
   }
 }
 

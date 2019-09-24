@@ -35,11 +35,15 @@ func createUser(emailAddress: String, name: String? = nil, passwordOne: String, 
     return false
   }
 
-  users[emailAddress] = user
+  users[user.identifier] = user
 
   return true
 }
 
-func loginUser(emailAddress: String, password: String) -> Bool {
-  return getUser(emailAddress: emailAddress)?.verifyPassword(password, hashingFunction: hashPassword) ?? false
+func loginUser(emailAddress: String, password: String) -> User? {
+  if let user = getUser(emailAddress: emailAddress), user.verifyPassword(password, hashingFunction: hashPassword) {
+    return user
+  } else {
+    return nil
+  }
 }

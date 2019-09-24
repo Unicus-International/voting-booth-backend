@@ -29,6 +29,10 @@ public struct User: Codable {
     self.passwordHash = "$5$\(salt)$\(hash(salt + passwordOne))"
   }
 
+  public var identifier: String {
+    return emailAddress
+  }
+
   public func verifyPassword(
     _ password: String,
     hashingFunction hash: (String) -> String = { $0 }
