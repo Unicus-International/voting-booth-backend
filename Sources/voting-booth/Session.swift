@@ -21,4 +21,12 @@ struct Session: Codable {
   func destroy() {
     sessions[self.identifier] = nil
   }
+
+  static func destroy(_ key: UUID) {
+    find(key)?.destroy()
+  }
+
+  static func find(_ key: UUID) -> Session? {
+    return sessions[key]
+  }
 }

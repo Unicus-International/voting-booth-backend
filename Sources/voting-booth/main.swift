@@ -84,6 +84,11 @@ userRoutes.add(method: .post, uri: "/login") {
 userRoutes.add(method: .get, uri: "/logout") {
   request, response in
 
+  request
+    .header(.custom(name: "X-Session-Id"))
+    .flatMap { UUID(uuidString: $0) }
+    .flatMap { Session.destroy($0) }
+
   response
     .completed(status: .noContent)
 }
