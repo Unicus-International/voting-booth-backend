@@ -50,6 +50,14 @@ public extension Election {
     return (self.votes[franchise.identifier] != nil)
   }
 
+  func castVote(_ franchise: Franchise, on ballot: Ballot, for candidates: [Candidate]) -> (Bool, Returns) {
+    return (false, .updatesForbidden)
+  }
+
+  func castVote(_ franchise: Franchise, on ballot: Ballot, for candidates: Candidate...) -> (Bool, Returns) {
+    return castVote(franchise, on: ballot, for: candidates)
+  }
+
   func castVote(_ vote: Vote) -> (Bool, Returns) {
     guard self.isOpen else {
       return (false, .pollsClosed)
@@ -68,6 +76,22 @@ public extension Election {
     } else {
       return (true, .voteCast)
     }
+  }
+
+  func firstChoiceVotes(for candidate: Candidate) -> UInt {
+    return 0
+  }
+
+}
+
+public extension Franchise {
+
+  func castVote(on ballot: Ballot, for candidates: [Candidate]) -> (Bool, Election.Returns) {
+    return election.castVote(self, on: ballot, for: candidates)
+  }
+
+  func castVote(on ballot: Ballot, for candidates: Candidate...) -> (Bool, Election.Returns) {
+    return castVote(on: ballot, for: candidates)
   }
 
 }
