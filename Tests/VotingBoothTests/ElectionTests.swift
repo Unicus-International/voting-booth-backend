@@ -71,12 +71,21 @@ final class ElectionTests: XCTestCase {
   }
 
   func testVoting() {
-    let election = Election("Election!", question: "Question?", from: Date(), to: Date())
+    let election = Election(
+      "Election!",
+      question: "Question?",
+      from: Date(timeIntervalSinceNow: -3600.0),
+      to: Date(timeIntervalSinceNow: 3600.0)
+    )
     let ballot = election.addBallot(named: "Ballot", with: Candidate(named: "Yes"), Candidate(named: "No"))
     election.generateFranchises(1)
     let franchise = election.franchises.first!
 
     XCTAssertFalse(election.hasVoted(franchise), "Vote has not been cast.")
+
+    let (zerothVoteCast, zerothReturns) = franchise.castVote(on: ballot, for: ballot.candidates.first!, ballot.candidates.first!)
+    XCTAssertFalse(zerothVoteCast, "Vote has not been cast.")
+    XCTAssertEqual(zerothReturns, .invalidVote, "Vote is invalid.")
 
     let (firstVoteCast, firstReturns) = franchise.castVote(on: ballot, for: ballot.candidates.first!)
     XCTAssertTrue(firstVoteCast, "Vote has been cast.")

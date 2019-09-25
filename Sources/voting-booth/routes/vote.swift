@@ -36,13 +36,12 @@ func voteRoutes() -> Routes {
 
     guard
       let bodyData = request.postBodyString?.data(using: .utf8),
-      let voteData = try? decoder.decode(Vote.CodingData.self, from: bodyData),
-      let vote = Vote(with: voteData, franchise: franchise)
+      let voteData = try? decoder.decode(Vote.CodingData.self, from: bodyData)
     else {
       return response.completed(status: .badRequest)
     }
 
-    let (result, status) = franchise.election.castVote(vote)
+    let (result, status) = franchise.castVote(data: voteData)
 
     if !result {
       response

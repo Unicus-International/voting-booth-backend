@@ -11,30 +11,6 @@ public struct Vote {
 
   let ballot: Ballot
   let candidates: [Candidate]
-
-  public init?(with data: CodingData, franchise: Franchise) {
-    guard data.candidates.count == Set(data.candidates).count else {
-      return nil
-    }
-
-    self.franchise = franchise
-    self.election = franchise.election
-
-    let ballotMap = election.ballotMap
-    let candidateMap = election.candidateMap
-
-    if let ballot = ballotMap[data.ballot] {
-      self.ballot = ballot
-    } else {
-      return nil
-    }
-
-    self.candidates = data.candidates.compactMap { candidateMap[$0] }
-
-    if self.candidates.count != data.candidates.count {
-      return nil
-    }
-  }
 }
 
 public extension Election {
@@ -44,38 +20,54 @@ public extension Election {
     case voteUpdated
     case pollsClosed = "POLLS_CLOSED"
     case updatesForbidden = "UPDATES_FORBIDDEN"
+    case invalidVote = "INVALID_VOTE"
   }
 
   func hasVoted(_ franchise: Franchise) -> Bool {
     return (self.votes[franchise.identifier] != nil)
   }
 
-  func castVote(_ franchise: Franchise, on ballot: Ballot, for candidates: [Candidate]) -> (Bool, Returns) {
-    return (false, .updatesForbidden)
-  }
-
-  func castVote(_ franchise: Franchise, on ballot: Ballot, for candidates: Candidate...) -> (Bool, Returns) {
-    return castVote(franchise, on: ballot, for: candidates)
-  }
-
-  func castVote(_ vote: Vote) -> (Bool, Returns) {
+  func castVote(_ franchise: UUID, on ballot: UUID, for candidates: [UUID]) -> (Bool, Returns) {
     guard self.isOpen else {
       return (false, .pollsClosed)
     }
 
-    let isUpdate = hasVoted(vote.franchise)
+    let candidateCount = candidates.count
+    let candidates = Array(Set(candidates).compactMap({ self.candidateMap[$0] }))
+    guard
+      let franchise = self.franchiseMap[franchise],
+      let ballot = self.ballotMap[ballot],
+      candidates.count == candidateCount
+    else {
+      return (false, .invalidVote)
+    }
+
+    let isUpdate = hasVoted(franchise)
 
     guard !isUpdate || self.canUpdate else {
       return (false, .updatesForbidden)
     }
 
-    self.votes[vote.franchise.identifier] = vote
+    self.votes[franchise.identifier] = Vote(
+      election: self,
+      franchise: franchise,
+      ballot: ballot,
+      candidates: candidates
+    )
 
     if (isUpdate) {
       return (true, .voteUpdated)
     } else {
       return (true, .voteCast)
     }
+  }
+
+  func castVote(_ franchise: Franchise, on ballot: Ballot, for candidates: [Candidate]) -> (Bool, Returns) {
+    return castVote(franchise.identifier, on: ballot.identifier, for: candidates.map { $0.identifier })
+  }
+
+  func castVote(_ franchise: Franchise, on ballot: Ballot, for candidates: Candidate...) -> (Bool, Returns) {
+    return castVote(franchise, on: ballot, for: candidates)
   }
 
   func firstChoiceVotes(for candidate: Candidate) -> UInt {
@@ -85,6 +77,14 @@ public extension Election {
 }
 
 public extension Franchise {
+
+  func castVote(data: Vote.CodingData) -> (Bool, Election.Returns) {
+    return castVote(on: data.ballot, for: data.candidates)
+  }
+
+  func castVote(on ballot: UUID, for candidates: [UUID]) -> (Bool, Election.Returns) {
+    return election.castVote(self.identifier, on: ballot, for: candidates)
+  }
 
   func castVote(on ballot: Ballot, for candidates: [Candidate]) -> (Bool, Election.Returns) {
     return election.castVote(self, on: ballot, for: candidates)
