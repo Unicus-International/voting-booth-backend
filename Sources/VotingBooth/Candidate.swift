@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Candidate: Codable {
+public struct Candidate: Codable, Equatable {
   let name: String
   let identifier = UUID()
 

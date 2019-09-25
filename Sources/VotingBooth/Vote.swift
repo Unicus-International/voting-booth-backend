@@ -70,8 +70,10 @@ public extension Election {
     return castVote(franchise, on: ballot, for: candidates)
   }
 
-  func firstChoiceVotes(for candidate: Candidate) -> UInt {
-    return 0
+  func firstChoiceVotes(for candidate: Candidate) -> Int {
+    return votes
+      .filter { $0.value.candidates.first! == candidate }
+      .count
   }
 
 }
