@@ -59,7 +59,7 @@ func voteRoutes() -> Routes {
 
     default:
       return response
-        .appendBody(string: "{\"error\": \"ERROR_\(status)\"}")
+        .appendBody(string: "{\"error\": \"ERROR_\(status.rawValue)\"}")
         .completed(status: .forbidden)
     }
   }
