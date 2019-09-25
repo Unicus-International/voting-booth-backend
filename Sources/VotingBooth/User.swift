@@ -5,7 +5,11 @@ public struct User: Codable {
   let name: String?
   let passwordHash: String?
 
-  public init(emailAddress: String, name: String? = nil) {
+  public init?(emailAddress: String, name: String? = nil) {
+    guard emailAddress.isLikelyEmail else {
+      return nil
+    }
+
     self.emailAddress = emailAddress
     self.name = name
     self.passwordHash = nil
@@ -19,7 +23,10 @@ public struct User: Codable {
     saltFunction: () -> String = { "" },
     hashingFunction hash: (String) -> String = { $0 }
   ) {
-    guard passwordOne == passwordTwo else {
+    guard
+      passwordOne == passwordTwo,
+      emailAddress.isLikelyEmail
+    else {
       return nil
     }
 
