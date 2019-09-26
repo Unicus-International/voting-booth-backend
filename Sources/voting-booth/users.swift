@@ -41,7 +41,10 @@ func createUser(emailAddress: String, name: String? = nil, passwordOne: String, 
 }
 
 func loginUser(emailAddress: String, password: String) -> User? {
-  if let user = getUser(emailAddress: emailAddress), user.verifyPassword(password, hashingFunction: hashPassword) {
+  if
+    let user = getUser(emailAddress: emailAddress),
+    user.verifyPassword(password, hashingFunction: hashPassword)
+  {
     return user
   } else {
     return nil
