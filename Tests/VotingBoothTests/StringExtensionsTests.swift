@@ -28,4 +28,9 @@ final class StringExtensionsTests: XCTestCase {
     XCTAssertFalse("user@domain name.com".isLikelyEmail, "Domain contains whitespace.")
     XCTAssertFalse("Test User <testuser@unicus.com>".isLikelyEmail, "Address is complete specification.")
   }
+
+  func testCanonicalEmail() {
+    XCTAssertEqual("testuser@unicus.no", "testuser@unicus.no".canonicalEmailAddress, "Email address is changed.")
+    XCTAssertEqual("testuser@unicus.no", "testuser+element@unicus.no".canonicalEmailAddress, "Plussed element is not removed.")
+  }
 }

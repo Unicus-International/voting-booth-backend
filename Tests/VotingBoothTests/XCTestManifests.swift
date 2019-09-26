@@ -22,6 +22,7 @@ extension StringExtensionsTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__StringExtensionsTests = [
+        ("testCanonicalEmails", testCanonicalEmail),
         ("testInvalidEmails", testInvalidEmails),
         ("testValidEmails", testValidEmails),
     ]

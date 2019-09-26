@@ -56,7 +56,7 @@ func userRoutes() -> Routes {
     if let user = loginUser(emailAddress: username, password: password) {
       let session = Session()
 
-      session.set(user.identifier, for: "USER_IDENTIFIER")
+      session.set(user.canonicalEmailAddress, for: "USER_IDENTIFIER")
 
       return response
         .addHeader(.custom(name: "X-Session-Id"), value: session.identifier.uuidString)

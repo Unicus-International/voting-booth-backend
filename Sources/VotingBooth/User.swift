@@ -1,6 +1,7 @@
 import Foundation
 
 public struct User: Codable {
+  let identifier = UUID()
   let emailAddress: String
   let name: String?
   let passwordHash: String?
@@ -36,12 +37,12 @@ public struct User: Codable {
     self.passwordHash = "$5$\(salt)$\(hash(salt + passwordOne))"
   }
 
-  public var identifier: String {
-    return emailAddress
-  }
-
   public var isRegisterable: Bool {
     return passwordHash == nil
+  }
+
+  public var canonicalEmailAddress: String {
+    return emailAddress.canonicalEmailAddress
   }
 
   public func verifyPassword(

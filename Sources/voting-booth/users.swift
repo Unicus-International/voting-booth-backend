@@ -17,12 +17,12 @@ func makeSalt() -> String {
 }
 
 func getUser(emailAddress: String) -> User? {
-  return users[emailAddress]
+  return users[emailAddress.canonicalEmailAddress]
 }
 
 func createUser(emailAddress: String, name: String? = nil, passwordOne: String, passwordTwo: String) -> Bool {
   guard
-    users[emailAddress] == nil,
+    getUser(emailAddress: emailAddress) == nil,
     let user = User(
       emailAddress: emailAddress,
       name: name,
@@ -35,7 +35,7 @@ func createUser(emailAddress: String, name: String? = nil, passwordOne: String, 
     return false
   }
 
-  users[user.identifier] = user
+  users[user.canonicalEmailAddress] = user
 
   return true
 }
