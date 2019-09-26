@@ -16,17 +16,17 @@ func makeSalt() -> String {
 extension User {
   static var users: [String:User] = [:]
 
-  static func getUser(emailAddress: String) -> User? {
+  static func fetch(emailAddress: String) -> User? {
     return users[emailAddress.canonicalEmailAddress]
   }
 
-  static func setUser(_ user: User) {
+  private static func register(_ user: User) {
     users[user.canonicalEmailAddress] = user
   }
 
   static func create(emailAddress: String, name: String? = nil, passwordOne: String, passwordTwo: String) -> Bool {
     guard
-      getUser(emailAddress: emailAddress) == nil,
+      fetch(emailAddress: emailAddress) == nil,
       let user = User(
         emailAddress: emailAddress,
         name: name,
@@ -39,14 +39,14 @@ extension User {
       return false
     }
 
-    setUser(user)
+    register(user)
 
     return true
   }
 
   static func login(emailAddress: String, password: String) -> User? {
     if
-      let user = getUser(emailAddress: emailAddress),
+      let user = fetch(emailAddress: emailAddress),
       user.verifyPassword(password, hashingFunction: hashPassword)
     {
       return user

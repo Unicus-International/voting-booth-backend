@@ -22,7 +22,7 @@ func userRoutes() -> Routes {
         .completed(status: .badRequest)
     }
 
-    guard User.getUser(emailAddress: username) == nil else {
+    guard User.fetch(emailAddress: username) == nil else {
       return response
         .completed(status: .forbidden)
     }
