@@ -30,7 +30,11 @@ final class StringExtensionsTests: XCTestCase {
   }
 
   func testCanonicalEmail() {
-    XCTAssertEqual("testuser@unicus.no", "testuser@unicus.no".canonicalEmailAddress, "Email address is changed.")
-    XCTAssertEqual("testuser@unicus.no", "testuser+element@unicus.no".canonicalEmailAddress, "Plussed element is not removed.")
+    let canonical = "testuser@unicus.no"
+
+    XCTAssertEqual("testuser@unicus.no".canonicalEmailAddress, canonical, "Email address is changed.")
+    XCTAssertEqual("testuser+element@unicus.no".canonicalEmailAddress, canonical, "Plussed element is not removed.")
+    XCTAssertEqual("TestUser@unicus.no".canonicalEmailAddress, canonical, "Email address is not lowercase.")
   }
+
 }

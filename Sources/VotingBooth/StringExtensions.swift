@@ -5,6 +5,13 @@ public extension String {
   }
 
   var canonicalEmailAddress: String {
-    return self
+    if (self.isLikelyEmail) {
+      let splitAddress = self.lowercased.split(separator: "@")
+      let splitUsername = splitAddress.first!.split(separator: "+")
+
+      return "\(splitUsername.first!)@\(splitAddress.last!)"
+    } else {
+      return self
+    }
   }
 }
