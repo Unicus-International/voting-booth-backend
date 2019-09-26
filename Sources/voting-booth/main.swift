@@ -32,7 +32,7 @@ let decoder = JSONDecoder()
 var routes = Routes()
 
 #if DEBUG
-assert(createUser(emailAddress: "testuser@unicus.no", passwordOne: "testuser", passwordTwo: "testuser"))
+assert(User.create(emailAddress: "testuser@unicus.no", passwordOne: "testuser", passwordTwo: "testuser"))
 
 routes.add(debugRoutes())
 #endif

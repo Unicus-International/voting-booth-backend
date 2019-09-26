@@ -2,6 +2,8 @@ import PerfectHTTP
 
 import Foundation
 
+import VotingBooth
+
 func userRoutes() -> Routes {
   var userRoutes = Routes(baseUri: "/user")
 
@@ -20,7 +22,7 @@ func userRoutes() -> Routes {
         .completed(status: .badRequest)
     }
 
-    guard getUser(emailAddress: username) == nil else {
+    guard User.getUser(emailAddress: username) == nil else {
       return response
         .completed(status: .forbidden)
     }
@@ -32,7 +34,7 @@ func userRoutes() -> Routes {
         .completed(status: .badRequest)
     }
 
-    guard createUser(emailAddress: username, name: name, passwordOne: passwordOne, passwordTwo: passwordTwo) else {
+    guard User.create(emailAddress: username, name: name, passwordOne: passwordOne, passwordTwo: passwordTwo) else {
       return response
         .setHeader(.contentType, value: "application/json")
         .appendBody(string: #"{"error": "ERROR_PASSWORDS_DIFFER"}"#)
@@ -53,7 +55,7 @@ func userRoutes() -> Routes {
       return response.completed(status: .badRequest)
     }
 
-    if let user = loginUser(emailAddress: username, password: password) {
+    if let user = User.login(emailAddress: username, password: password) {
       let session = Session()
 
       session.set(user.canonicalEmailAddress, for: "USER_IDENTIFIER")
