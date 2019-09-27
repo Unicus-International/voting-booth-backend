@@ -6,7 +6,9 @@ public class Election {
     let question: String
 
     let runs: [String:String]
+
     let ballots: [Ballot]
+    let updatableVotes: Bool
   }
 
   let name: String
@@ -15,6 +17,7 @@ public class Election {
   let runs: Range<Date>
 
   var ballots: [Ballot] = []
+  let updatableVotes: Bool
 
   var candidates: [Candidate] {
     return self.ballots.flatMap { $0.candidates }
@@ -23,11 +26,12 @@ public class Election {
   var franchises: [Franchise] = []
   var votes: [UUID:Vote] = [:]
 
-  public init(_ name: String, question: String, from: Date, to: Date) {
+  public init(_ name: String, question: String, from: Date, to: Date, updatableVotes: Bool = true) {
     self.name = name
     self.question = question
 
     self.runs = from..<to
+    self.updatableVotes = updatableVotes
   }
 
   public var encodingData: EncodingData {
@@ -40,16 +44,13 @@ public class Election {
         "from": formatter.string(from: runs.lowerBound),
         "to": formatter.string(from: runs.upperBound),
       ],
-      ballots: ballots
+      ballots: ballots,
+      updatableVotes: updatableVotes
     )
   }
 
   public var isOpen: Bool {
     return runs.contains(Date())
-  }
-
-  public var canUpdate: Bool {
-    return true
   }
 
   @discardableResult

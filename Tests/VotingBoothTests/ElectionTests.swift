@@ -98,4 +98,23 @@ final class ElectionTests: XCTestCase {
     XCTAssertEqual(election.firstChoiceVotes(for: ballot.candidates.first!), 0, "Vote is updated.")
     XCTAssertEqual(election.firstChoiceVotes(for: ballot.candidates.last!), 1, "Vote is counted.")
   }
+
+  func testElectionNoUpdate() {
+    let election = Election(
+      "Election!",
+      question: "Question?",
+      from: Date(timeIntervalSinceNow: -3600.0),
+      to: Date(timeIntervalSinceNow: 3600.0),
+      updatableVotes: false
+    )
+    let ballot = election.addBallot(named: "Ballot", with: Candidate(named: "Yes"), Candidate(named: "No"))
+    election.generateFranchises(1)
+    let franchise = election.franchises.first!
+
+    let (firstVoteCast, _) = franchise.castVote(on: ballot, for: ballot.candidates.first!)
+    XCTAssertTrue(firstVoteCast, "The first vote was not accepted.")
+
+    let (secondVoteCast, _) = franchise.castVote(on: ballot, for: ballot.candidates.last!)
+    XCTAssertFalse(secondVoteCast, "The second vote was accepted.")
+  }
 }

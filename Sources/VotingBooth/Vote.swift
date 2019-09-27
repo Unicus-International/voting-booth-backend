@@ -27,6 +27,22 @@ public extension Election {
     return (self.votes[franchise.identifier] != nil)
   }
 
+  func vote(_ franchise: Franchise, on ballot: Ballot, for candidates: [Candidate]) -> Returns {
+    let isUpdate = (self.votes[franchise.identifier] != nil)
+    self.votes[franchise.identifier] = Vote(
+      election: self,
+      franchise: franchise,
+      ballot: ballot,
+      candidates: candidates
+    )
+
+    if (isUpdate) {
+      return .voteUpdated
+    } else {
+      return .voteCast
+    }
+  }
+
   func castVote(_ franchise: UUID, on ballot: UUID, for candidates: [UUID]) -> (Bool, Returns) {
     guard self.isOpen else {
       return (false, .pollsClosed)
@@ -42,24 +58,11 @@ public extension Election {
       return (false, .invalidVote)
     }
 
-    let isUpdate = hasVoted(franchise)
-
-    guard !isUpdate || self.canUpdate else {
+    guard franchise.canVote else {
       return (false, .updatesForbidden)
     }
 
-    self.votes[franchise.identifier] = Vote(
-      election: self,
-      franchise: franchise,
-      ballot: ballot,
-      candidates: candidates
-    )
-
-    if (isUpdate) {
-      return (true, .voteUpdated)
-    } else {
-      return (true, .voteCast)
-    }
+    return (true, vote(franchise, on: ballot, for: candidates))
   }
 
   func castVote(_ franchise: Franchise, on ballot: Ballot, for candidates: [Candidate]) -> (Bool, Returns) {
@@ -94,6 +97,18 @@ public extension Franchise {
 
   func castVote(on ballot: Ballot, for candidates: Candidate...) -> (Bool, Election.Returns) {
     return castVote(on: ballot, for: candidates)
+  }
+
+  var hasVoted: Bool {
+    return election.hasVoted(self)
+  }
+
+  var canVote: Bool {
+    if hasVoted && !election.updatableVotes {
+      return false
+    } else {
+      return true
+    }
   }
 
 }

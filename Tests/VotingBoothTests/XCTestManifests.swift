@@ -11,6 +11,7 @@ extension ElectionTests {
         ("testElectionClosedNow", testElectionClosedNow),
         ("testElectionClosedSoon", testElectionClosedSoon),
         ("testElectionFuture", testElectionFuture),
+        ("testElectionNoUpdate", testElectionNoUpdate),
         ("testElectionPast", testElectionPast),
         ("testFranchises", testFranchises),
         ("testVoting", testVoting),
