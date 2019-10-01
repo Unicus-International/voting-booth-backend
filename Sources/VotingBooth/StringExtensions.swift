@@ -6,7 +6,7 @@ public extension String {
 
   var canonicalEmailAddress: String {
     if (self.isLikelyEmail) {
-      let splitAddress = self.lowercased.split(separator: "@")
+      let splitAddress = self.lowercased().split(separator: "@")
       let splitUsername = splitAddress.first!.split(separator: "+")
 
       return "\(splitUsername.first!)@\(splitAddress.last!)"
