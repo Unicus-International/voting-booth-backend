@@ -2,14 +2,27 @@ import Foundation
 
 public class Election {
   public struct EncodingData: Encodable {
+    let identifier: UUID
+
     let name: String
     let question: String
 
-    let runs: [String:String]
+    let runs: Range<Date>
 
     let ballots: [Ballot]
     let updatableVotes: Bool
   }
+
+  public struct DecodingData: Decodable {
+    let name: String
+    let question: String
+
+    let runs: Range<Date>
+
+    let updatableVotes: Bool
+  }
+
+  let identifier = UUID()
 
   let name: String
   let question: String
@@ -38,12 +51,10 @@ public class Election {
     let formatter = ISO8601DateFormatter()
 
     return EncodingData(
+      identifier: identifier,
       name: name,
       question: question,
-      runs: [
-        "from": formatter.string(from: runs.lowerBound),
-        "to": formatter.string(from: runs.upperBound),
-      ],
+      runs: runs,
       ballots: ballots,
       updatableVotes: updatableVotes
     )

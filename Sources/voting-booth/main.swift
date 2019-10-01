@@ -26,8 +26,10 @@ let candidates = election.candidateMap
 
 let encoder = JSONEncoder()
 encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+encoder.dateEncodingStrategy = .iso8601
 
 let decoder = JSONDecoder()
+decoder.dateDecodingStrategy = .iso8601
 
 var routes = Routes()
 
