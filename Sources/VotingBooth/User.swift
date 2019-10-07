@@ -1,6 +1,6 @@
 import Foundation
 
-public struct User: Codable {
+public class User: Codable {
   let identifier = UUID()
   let emailAddress: String
   let name: String?
@@ -45,6 +45,17 @@ public struct User: Codable {
     return emailAddress.canonicalEmailAddress
   }
 
+  var commissionedElections: [Election] = []
+  var comptrollingElections: [Election] = []
+
+  public var commissioned: [Election] {
+    self.commissionedElections
+  }
+
+  public var comptrolling: [Election] {
+    self.comptrollingElections
+  }
+
   public func verifyPassword(
     _ password: String,
     hashingFunction hash: (String) -> String = { $0 }
@@ -66,5 +77,13 @@ public struct User: Codable {
     }
 
     return hashedPassword == hash(salt + password)
+  }
+
+  enum CodingKeys: String, CodingKey {
+    case identifier
+    case emailAddress = "email_address"
+
+    case name
+    case passwordHash
   }
 }

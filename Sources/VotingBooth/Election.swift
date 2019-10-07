@@ -32,6 +32,9 @@ public class Election {
   var ballots: [Ballot] = []
   let updatableVotes: Bool
 
+  let commissioner: User
+  let comptrollers: [User]
+
   var candidates: [Candidate] {
     return self.ballots.flatMap { $0.candidates }
   }
@@ -39,31 +42,58 @@ public class Election {
   var franchises: [Franchise] = []
   var votes: [UUID:Vote] = [:]
 
-  public init(name: String, question: String, runs: Range<Date>, updatableVotes: Bool) {
+  init(
+    name: String,
+    question: String,
+    runs: Range<Date>,
+    updatableVotes: Bool,
+    commissioner: User,
+    comptrollers: [User] = []
+  ) {
     self.name = name
     self.question = question
 
     self.runs = runs
     self.updatableVotes = updatableVotes
 
+    self.commissioner = commissioner
+    self.comptrollers = comptrollers
+
+    commissioner.commissionedElections.append(self)
+    comptrollers.forEach {
+      $0.comptrollingElections.append(self)
+    }
+
     Self.register(self)
   }
 
-  public convenience init(_ name: String, question: String, from: Date, to: Date, updatableVotes: Bool = true) {
+  public convenience init(
+    for commissioner: User,
+    with comptrollers: [User] = [],
+    titled name: String,
+    asking question: String,
+    from: Date,
+    to: Date,
+    updatableVotes: Bool = true
+  ) {
     self.init(
       name: name,
       question: question,
       runs: from..<to,
-      updatableVotes: updatableVotes
+      updatableVotes: updatableVotes,
+      commissioner: commissioner,
+      comptrollers: comptrollers
     )
   }
 
-  public convenience init(decodingData: DecodingData) {
+  public convenience init(for commissioner: User, with comptrollers: [User] = [], decodingData: DecodingData) {
     self.init(
       name: decodingData.name,
       question: decodingData.question,
       runs: decodingData.runs,
-      updatableVotes: decodingData.updatableVotes
+      updatableVotes: decodingData.updatableVotes,
+      commissioner: commissioner,
+      comptrollers: comptrollers
     )
   }
 

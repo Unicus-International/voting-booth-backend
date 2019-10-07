@@ -3,7 +3,13 @@ import XCTest
 
 final class ElectionTests: XCTestCase {
   func testFranchises() {
-    let election = Election("Election!", question: "Question?", from: Date(), to: Date())
+    let user = User(emailAddress: "testuser@unicus.no")!
+    let election = Election(
+      for: user,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(), to: Date()
+    )
 
     election.generateFranchises(5)
 
@@ -16,7 +22,13 @@ final class ElectionTests: XCTestCase {
   }
 
   func testBallots() {
-    let election = Election("Election!", question: "Question?", from: Date(), to: Date())
+    let user = User(emailAddress: "testuser@unicus.no")!
+    let election = Election(
+      for: user,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(), to: Date()
+    )
 
     election.addBallot(named: "A ballot.", with: [])
     election.addBallot(named: "Another ballot.", with: [])
@@ -26,7 +38,13 @@ final class ElectionTests: XCTestCase {
   }
 
   func testCandidates() {
-    let election = Election("Election!", question: "Question?", from: Date(), to: Date())
+    let user = User(emailAddress: "testuser@unicus.no")!
+    let election = Election(
+      for: user,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(), to: Date()
+    )
 
     election.addBallot(named: "A ballot.", with: Candidate(named: "A candidate."), Candidate(named: "Another candidate."))
     XCTAssertEqual(election.candidates.count, 2, "An incorrect number of candidates are found.")
@@ -37,45 +55,60 @@ final class ElectionTests: XCTestCase {
   }
 
   func testElectionClosedNow() {
-    let election = Election("Election!", question: "Question?", from: Date(), to: Date())
+    let user = User(emailAddress: "testuser@unicus.no")!
+    let election = Election(
+      for: user,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(), to: Date()
+    )
 
     XCTAssertFalse(election.isOpen, "An election closing now is still open.")
   }
 
   func testElectionClosedSoon() {
-    let election = Election("Election!", question: "Question?", from: Date(), to: Date(timeIntervalSinceNow: 60.0))
+    let user = User(emailAddress: "testuser@unicus.no")!
+    let election = Election(
+      for: user,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(), to: Date(timeIntervalSinceNow: 60.0)
+    )
 
     XCTAssertTrue(election.isOpen, "An election closing in a minute is already closed.")
   }
 
   func testElectionPast() {
+    let user = User(emailAddress: "testuser@unicus.no")!
     let election = Election(
-      "Election!",
-      question: "Question?",
-      from: Date(timeIntervalSinceNow: -7200.0),
-      to: Date(timeIntervalSinceNow: -3600.0)
+      for: user,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(timeIntervalSinceNow: -7200.0), to: Date(timeIntervalSinceNow: -3600.0)
     )
 
     XCTAssertFalse(election.isOpen, "An election in the past is still open.")
   }
 
   func testElectionFuture() {
+    let user = User(emailAddress: "testuser@unicus.no")!
     let election = Election(
-      "Election!",
-      question: "Question?",
-      from: Date(timeIntervalSinceNow: 3600.0),
-      to: Date(timeIntervalSinceNow: 7200.0)
+      for: user,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(timeIntervalSinceNow: 3600.0), to: Date(timeIntervalSinceNow: 7200.0)
     )
 
     XCTAssertFalse(election.isOpen, "An election in the future is already open.")
   }
 
   func testVoting() {
+    let user = User(emailAddress: "testuser@unicus.no")!
     let election = Election(
-      "Election!",
-      question: "Question?",
-      from: Date(timeIntervalSinceNow: -3600.0),
-      to: Date(timeIntervalSinceNow: 3600.0)
+      for: user,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(timeIntervalSinceNow: -3600.0), to: Date(timeIntervalSinceNow: 3600.0)
     )
     let ballot = election.addBallot(named: "Ballot", with: Candidate(named: "Yes"), Candidate(named: "No"))
     election.generateFranchises(1)
@@ -100,11 +133,12 @@ final class ElectionTests: XCTestCase {
   }
 
   func testElectionNoUpdate() {
+    let user = User(emailAddress: "testuser@unicus.no")!
     let election = Election(
-      "Election!",
-      question: "Question?",
-      from: Date(timeIntervalSinceNow: -3600.0),
-      to: Date(timeIntervalSinceNow: 3600.0),
+      for: user,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(timeIntervalSinceNow: -3600.0), to: Date(timeIntervalSinceNow: 3600.0),
       updatableVotes: false
     )
     let ballot = election.addBallot(named: "Ballot", with: Candidate(named: "Yes"), Candidate(named: "No"))
@@ -116,5 +150,29 @@ final class ElectionTests: XCTestCase {
 
     let (secondVoteCast, _) = franchise.castVote(on: ballot, for: ballot.candidates.last!)
     XCTAssertFalse(secondVoteCast, "The second vote was erroneously accepted.")
+  }
+
+  func testUserBinding() {
+    let commissioner = User(emailAddress: "commissioner@unicus.no")!
+    let comptrollers = [
+      User(emailAddress: "comptroller1@unicus.no")!,
+      User(emailAddress: "comptroller2@unicus.no")!,
+    ]
+
+    Election(
+      for: commissioner,
+      with: comptrollers,
+      titled: "Election!",
+      asking: "Question?",
+      from: Date(), to: Date()
+    )
+
+    XCTAssertNotNil(commissioner.commissioned.first, "Commissioned elections is not added to.")
+    XCTAssertNotNil(comptrollers.first?.comptrolling.first, "Comptrolling elections is not added to.")
+    XCTAssertNotNil(comptrollers.last?.comptrolling.first, "Comptrolling elections is not added to.")
+
+    XCTAssertNil(commissioner.comptrolling.first, "Comptrolling elections is erroneously added to.")
+    XCTAssertNil(comptrollers.first?.commissioned.first, "Commissioned elections is erroneously added to.")
+    XCTAssertNil(comptrollers.last?.commissioned.first, "Commissioned elections is erroneously added to.")
   }
 }

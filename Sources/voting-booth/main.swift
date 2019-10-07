@@ -20,9 +20,13 @@ decoder.dateDecodingStrategy = .iso8601
 var routes = Routes()
 
 #if DEBUG
+assert(User.create(emailAddress: "testuser@unicus.no", passwordOne: "testuser", passwordTwo: "testuser"))
+let user = User.fetch(emailAddress: "testuser@unicus.no")!
+
 let election = Election(
-  "Do it!",
-  question: "Should we do it?",
+  for: user,
+  titled: "Do it!",
+  asking: "Should we do it?",
   from: Date(timeIntervalSinceReferenceDate: 5.0e8),
   to: Date(timeIntervalSinceReferenceDate: 6.0e8)
 )
@@ -30,13 +34,12 @@ election.addBallot(named: "Do it?", with: Candidate(named: "Yes"), Candidate(nam
 
 election.generateFranchises(30)
 
-assert(User.create(emailAddress: "testuser@unicus.no", passwordOne: "testuser", passwordTwo: "testuser"))
-
 routes.add(debugRoutes())
 #endif
 
 routes.add(userRoutes())
 routes.add(voteRoutes())
+routes.add(electionRoutes())
 
 try HTTPServer.launch(
   .server(name: "::1", port: 8181, routes: routes)

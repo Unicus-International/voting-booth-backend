@@ -14,6 +14,7 @@ extension ElectionTests {
         ("testElectionNoUpdate", testElectionNoUpdate),
         ("testElectionPast", testElectionPast),
         ("testFranchises", testFranchises),
+        ("testUserBinding", testUserBinding),
         ("testVoting", testVoting),
     ]
 }
