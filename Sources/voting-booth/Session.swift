@@ -1,5 +1,7 @@
 import Foundation
 
+import VotingBooth
+
 var sessions: [UUID:Session] = [:]
 
 class Session: Codable {
@@ -28,5 +30,11 @@ class Session: Codable {
 
   static func find(_ key: UUID) -> Session? {
     return sessions[key]
+  }
+}
+
+extension Session {
+  var user: User? {
+    parameters["USER_IDENTIFIER"].flatMap { User.fetch(emailAddress: $0) }
   }
 }

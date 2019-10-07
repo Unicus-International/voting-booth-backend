@@ -13,6 +13,11 @@ public class Election {
     let updatableVotes: Bool
   }
 
+  public struct ListData: Encodable {
+    let identifier: UUID
+    let name: String
+  }
+
   public struct DecodingData: Decodable {
     let name: String
     let question: String
@@ -110,6 +115,10 @@ public class Election {
 
   public var isOpen: Bool {
     return runs.contains(Date())
+  }
+
+  public var listData: ListData {
+    return ListData(identifier: identifier, name: name)
   }
 
   @discardableResult
