@@ -34,6 +34,9 @@ election.addBallot(named: "Do it?", with: Candidate(named: "Yes"), Candidate(nam
 
 election.generateFranchises(30)
 
+let fakeSession = Session()
+fakeSession.set(user.canonicalEmailAddress, for: "USER_IDENTIFIER")
+
 routes.add(debugRoutes())
 #endif
 

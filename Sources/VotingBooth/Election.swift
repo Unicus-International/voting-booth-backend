@@ -144,6 +144,10 @@ extension Election {
     elections[election.identifier] = election
   }
 
+  public static func fetch(_ identifier: UUID) -> Election? {
+    return elections[identifier]
+  }
+
   public static var allFranchises: [UUID:Franchise] {
     return elections
       .values
