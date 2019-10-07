@@ -68,13 +68,16 @@ func electionRoutes() -> Routes {
   electionRoutes.add(method: .get, uri: "/list") {
     request, response in
 
-    guard let election = request.scratchPad["election"] as? Election else {
+    guard
+      let election = request.scratchPad["election"] as? Election,
+      let bodyString = (try? encoder.encode(election.encodingData)).flatMap({ String(data: $0, encoding: .utf8) })
+    else {
       return response
         .completed(status: .internalServerError)
     }
 
     response
-      .appendBody(string: String(data: try! encoder.encode(election.encodingData), encoding: .utf8)!)
+      .appendBody(string: bodyString)
       .completed()
   }
 
