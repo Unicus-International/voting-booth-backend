@@ -1,3 +1,5 @@
+import Foundation
+
 public extension Election {
   func commissioned(by user: User) -> Bool {
     return user == commissioner
@@ -11,6 +13,10 @@ public extension Election {
 public extension User {
   func commissioned(_ election: Election) -> Bool {
     return election.commissioned(by: self)
+  }
+
+  func commissioned(election identifier: UUID) -> Election? {
+    return commissioned.first(where: { $0.identifier == identifier })
   }
 
   func comptrols(_ election: Election) -> Bool {

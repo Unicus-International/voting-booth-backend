@@ -44,16 +44,17 @@ func electionRoutes() -> Routes {
 
     guard
       let session = request.scratchPad["session"] as? Session,
-      let user = session.user,
-      let election = request.urlVariables["election"]
-        .flatMap({ UUID(uuidString: $0) })
-        .flatMap({ Election.fetch($0) })
+      let user = session.user
     else {
       return response
         .completed(status: .internalServerError)
     }
 
-    guard user.commissioned(election) else {
+    guard
+      let election = request.urlVariables["election"]
+        .flatMap({ UUID(uuidString: $0) })
+        .flatMap({ user.commissioned(election: $0) })
+    else {
       return response
         .completed(status: .notFound)
     }
