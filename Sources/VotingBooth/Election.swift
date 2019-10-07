@@ -39,14 +39,32 @@ public class Election {
   var franchises: [Franchise] = []
   var votes: [UUID:Vote] = [:]
 
-  public init(_ name: String, question: String, from: Date, to: Date, updatableVotes: Bool = true) {
+  public init(name: String, question: String, runs: Range<Date>, updatableVotes: Bool) {
     self.name = name
     self.question = question
 
-    self.runs = from..<to
+    self.runs = runs
     self.updatableVotes = updatableVotes
 
     Self.register(self)
+  }
+
+  public convenience init(_ name: String, question: String, from: Date, to: Date, updatableVotes: Bool = true) {
+    self.init(
+      name: name,
+      question: question,
+      runs: from..<to,
+      updatableVotes: updatableVotes
+    )
+  }
+
+  public convenience init(decodingData: DecodingData) {
+    self.init(
+      name: decodingData.name,
+      question: decodingData.question,
+      runs: decodingData.runs,
+      updatableVotes: decodingData.updatableVotes
+    )
   }
 
   public var encodingData: EncodingData {
