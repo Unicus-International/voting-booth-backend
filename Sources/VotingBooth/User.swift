@@ -48,14 +48,6 @@ public class User: Codable {
   var commissionedElections: [Election] = []
   var comptrollingElections: [Election] = []
 
-  public var commissioned: [Election] {
-    self.commissionedElections
-  }
-
-  public var comptrolling: [Election] {
-    self.comptrollingElections
-  }
-
   public func verifyPassword(
     _ password: String,
     hashingFunction hash: (String) -> String = { $0 }
@@ -85,5 +77,11 @@ public class User: Codable {
 
     case name
     case passwordHash
+  }
+}
+
+extension User: Equatable {
+  public static func == (_ lhs: User, _ rhs: User) -> Bool {
+    return lhs.emailAddress == rhs.emailAddress
   }
 }

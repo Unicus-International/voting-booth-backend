@@ -159,7 +159,7 @@ final class ElectionTests: XCTestCase {
       User(emailAddress: "comptroller2@unicus.no")!,
     ]
 
-    Election(
+    let election = Election(
       for: commissioner,
       with: comptrollers,
       titled: "Election!",
@@ -167,12 +167,12 @@ final class ElectionTests: XCTestCase {
       from: Date(), to: Date()
     )
 
-    XCTAssertNotNil(commissioner.commissioned.first, "Commissioned elections is not added to.")
-    XCTAssertNotNil(comptrollers.first?.comptrolling.first, "Comptrolling elections is not added to.")
-    XCTAssertNotNil(comptrollers.last?.comptrolling.first, "Comptrolling elections is not added to.")
+    XCTAssertTrue(election.commissioned(by: commissioner), "Commissioned elections is not added to.")
+    XCTAssertTrue(election.comptrolled(by: comptrollers.first!), "Comptrolling elections is not added to.")
+    XCTAssertTrue(comptrollers.last!.comptrols(election), "Comptrolling elections is not added to.")
 
-    XCTAssertNil(commissioner.comptrolling.first, "Comptrolling elections is erroneously added to.")
-    XCTAssertNil(comptrollers.first?.commissioned.first, "Commissioned elections is erroneously added to.")
-    XCTAssertNil(comptrollers.last?.commissioned.first, "Commissioned elections is erroneously added to.")
+    XCTAssertFalse(commissioner.comptrols(election), "Comptrolling elections is erroneously added to.")
+    XCTAssertFalse(comptrollers.first!.commissioned(election), "Commissioned elections is erroneously added to.")
+    XCTAssertFalse(election.commissioned(by: comptrollers.last!), "Commissioned elections is erroneously added to.")
   }
 }
