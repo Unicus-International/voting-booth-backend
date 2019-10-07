@@ -4,6 +4,15 @@ import Foundation
 
 import VotingBooth
 
+extension Session {
+  static func find(for request: HTTPRequest) -> Session? {
+    return request
+      .header(.custom(name: "X-Session-Id"))
+      .flatMap { UUID(uuidString: $0) }
+      .flatMap { Session.find($0) }
+  }
+}
+
 func userRoutes() -> Routes {
   var userRoutes = Routes(baseUri: "/user")
 
@@ -72,10 +81,9 @@ func userRoutes() -> Routes {
   userRoutes.add(method: .get, uri: "/logout") {
     request, response in
 
-    request
-      .header(.custom(name: "X-Session-Id"))
-      .flatMap { UUID(uuidString: $0) }
-      .flatMap { Session.destroy($0) }
+    Session
+      .find(for: request)?
+      .destroy()
 
     response
       .completed(status: .noContent)
