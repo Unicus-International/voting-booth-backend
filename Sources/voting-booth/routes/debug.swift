@@ -1,5 +1,7 @@
 import PerfectHTTP
 
+import VotingBooth
+
 func debugRoutes() -> Routes {
   var debugRoutes = Routes(baseUri: "/debug") {
     request, response in
@@ -18,7 +20,7 @@ func debugRoutes() -> Routes {
     request, response in
 
     response
-      .appendBody(string: String(data: try! encoder.encode(Array(franchises.keys)), encoding: .utf8)!)
+      .appendBody(string: String(data: try! encoder.encode(Array(Election.allFranchises.keys)), encoding: .utf8)!)
       .completed()
   }
 

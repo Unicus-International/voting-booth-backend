@@ -10,7 +10,11 @@ func voteRoutes() -> Routes {
   routes.add(method: .get, uri: "/{franchise}") {
     request, response in
 
-    guard let franchise = request.urlVariables["franchise"].flatMap({ UUID(uuidString: $0) }).flatMap({ franchises[$0] }) else {
+    guard
+      let franchise = request.urlVariables["franchise"]
+        .flatMap({ UUID(uuidString: $0) })
+        .flatMap({ Election.allFranchises[$0] })
+    else {
       return response.completed(status: .notFound)
     }
 
@@ -29,7 +33,7 @@ func voteRoutes() -> Routes {
     guard
       let franchise = request.urlVariables["franchise"]
         .flatMap({ UUID(uuidString: $0) })
-        .flatMap({ franchises[$0] })
+        .flatMap({ Election.allFranchises[$0] })
     else {
       return response.completed(status: .notFound)
     }

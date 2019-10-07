@@ -45,11 +45,11 @@ public class Election {
 
     self.runs = from..<to
     self.updatableVotes = updatableVotes
+
+    Self.register(self)
   }
 
   public var encodingData: EncodingData {
-    let formatter = ISO8601DateFormatter()
-
     return EncodingData(
       identifier: identifier,
       name: name,
@@ -78,4 +78,19 @@ public class Election {
     return self.addBallot(named: name, with: candidates)
   }
 
+}
+
+extension Election {
+  static var elections: [UUID:Election] = [:]
+
+  private static func register(_ election: Election) {
+    elections[election.identifier] = election
+  }
+
+  public static var allFranchises: [UUID:Franchise] {
+    return elections
+      .values
+      .flatMap { $0.franchiseMap }
+      .reduce(into: [:]) { $0[$1.0] = $1.1 }
+  }
 }
