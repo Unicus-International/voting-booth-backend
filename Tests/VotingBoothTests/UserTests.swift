@@ -5,53 +5,53 @@ final class UserTests: XCTestCase {
   func testEmptyUser() {
     let user = User(emailAddress: "testuser@unicus.no")
 
-    XCTAssertNotNil(user, "User created successfully.")
-    XCTAssertTrue(user!.isRegisterable, "User is registerable.")
+    XCTAssertNotNil(user, "User not created successfully.")
+    XCTAssertTrue(user!.isRegisterable, "User is not registerable.")
   }
 
   func testNamedEmptyUser() {
     let user = User(emailAddress: "testuser@unicus.no", name: "Test User")
 
-    XCTAssertNotNil(user, "User created successfully.")
-    XCTAssertTrue(user!.isRegisterable, "User is registerable.")
+    XCTAssertNotNil(user, "User not created successfully.")
+    XCTAssertTrue(user!.isRegisterable, "User is not registerable.")
   }
 
   func testMatchingPasswords() {
     let user = User(emailAddress: "testuser@unicus.no", passwordOne: "matching", passwordTwo: "matching")
 
-    XCTAssertNotNil(user, "Passwords match.")
+    XCTAssertNotNil(user, "User not created successfully.")
   }
 
   func testNonMatchingPasswords() {
     let user = User(emailAddress: "testuser@unicus.no", passwordOne: "matching", passwordTwo: "different")
 
-    XCTAssertNil(user, "Passwords are different.")
+    XCTAssertNil(user, "User is created erroneously.")
   }
 
   func testVerifyPassword() {
     let user = User(emailAddress: "testuser@unicus.no", passwordOne: "password", passwordTwo: "password")
 
-    XCTAssertNotNil(user, "User created successfully.")
-    XCTAssertTrue(user!.verifyPassword("password"), "Password is verified.")
+    XCTAssertNotNil(user, "User not created successfully.")
+    XCTAssertTrue(user!.verifyPassword("password"), "Password is not verified.")
   }
 
   func testVerifyNonMatchingPassword() {
     let user = User(emailAddress: "testuser@unicus.no", passwordOne: "password", passwordTwo: "password")
 
-    XCTAssertNotNil(user, "User created successfully.")
-    XCTAssertFalse(user!.verifyPassword("pass word"), "Password is not verified.")
+    XCTAssertNotNil(user, "User not created successfully.")
+    XCTAssertFalse(user!.verifyPassword("pass word"), "Password is erroneously verified.")
   }
 
   func testUsernameValidityEmptyUser() {
     let user = User(emailAddress: "not_an_email_address")
 
-    XCTAssertNil(user)
+    XCTAssertNil(user, "User is created erroneously.")
   }
 
   func testUsernameValidity() {
     let user = User(emailAddress: "not_an_email_address", passwordOne: "password", passwordTwo: "password")
 
-    XCTAssertNil(user)
+    XCTAssertNil(user, "User is created erroneously.")
   }
 
   func testHashingFunction() {
@@ -63,8 +63,8 @@ final class UserTests: XCTestCase {
       hashingFunction: hashingFunction
     )
 
-    XCTAssertNotNil(user, "User created successfully.")
-    XCTAssertTrue(user!.verifyPassword("password", hashingFunction: hashingFunction), "Password is verified.")
+    XCTAssertNotNil(user, "User not created successfully.")
+    XCTAssertTrue(user!.verifyPassword("password", hashingFunction: hashingFunction), "Password not verified.")
   }
 
   func testSalt() {
@@ -76,7 +76,7 @@ final class UserTests: XCTestCase {
       saltFunction: saltFunction
     )
 
-    XCTAssertNotNil(user, "User created successfully.")
-    XCTAssertTrue(user!.verifyPassword("password"), "Password is verified.")
+    XCTAssertNotNil(user, "User not created successfully.")
+    XCTAssertTrue(user!.verifyPassword("password"), "Password not verified.")
   }
 }
