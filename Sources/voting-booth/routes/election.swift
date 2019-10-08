@@ -28,14 +28,16 @@ func electionRoutes() -> Routes {
 
     guard
       let session = request.scratchPad["session"] as? Session,
-      let user = session.user
+      let user = session.user,
+      let bodyData = try? encoder.encode(user.commissioned.map({ $0.listData })),
+      let bodyString = String(data: bodyData, encoding: .utf8)
     else {
       return response
         .completed(status: .internalServerError)
     }
 
     response
-      .appendBody(string: String(data: try! encoder.encode(user.commissioned.map { $0.listData }), encoding: .utf8)!)
+      .appendBody(string: bodyString)
       .completed()
   }
 
