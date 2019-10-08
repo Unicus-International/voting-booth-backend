@@ -23,6 +23,34 @@ func electionRoutes() -> Routes {
       .next()
   }
 
+  routes.add(method: .post, uri: "/commission") {
+    request, response in
+
+    guard
+      let session = request.scratchPad["session"] as? Session,
+      let user = session.user,
+      let postBodyData = request.postBodyString?.data(using: .utf8),
+      let electionData = try? decoder.decode(Election.DecodingData.self, from: postBodyData)
+    else {
+      return response
+        .completed(status: .badRequest)
+    }
+
+    let election = Election(for: user, decodingData: electionData)
+
+    guard
+      let bodyData = try? encoder.encode(election.encodingData),
+      let bodyString = String(data: bodyData, encoding: .utf8)
+    else {
+      return response
+        .completed(status: .internalServerError)
+    }
+
+    response
+      .appendBody(string: bodyString)
+      .completed(status: .created)
+  }
+
   routes.add(method: .get, uri: "list") {
     request, response in
 
