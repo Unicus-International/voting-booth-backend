@@ -72,7 +72,8 @@ func electionRoutes() -> Routes {
 
     guard
       let election = request.scratchPad["election"] as? Election,
-      let bodyString = (try? encoder.encode(election.encodingData)).flatMap({ String(data: $0, encoding: .utf8) })
+      let bodyData = try? encoder.encode(election.encodingData),
+      let bodyString = String(data: bodyData, encoding: .utf8)
     else {
       return response
         .completed(status: .internalServerError)
