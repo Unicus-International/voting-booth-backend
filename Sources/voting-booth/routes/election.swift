@@ -136,6 +136,35 @@ func electionRoutes() -> Routes {
       .completed()
   }
 
+  ballotRoutes.add(method: .get, uri: "/{ballot}/list") {
+    request, response in
+
+    guard
+      let election = request.scratchPad["election"] as? Election,
+      let ballotIdentifier = request.urlVariables["ballot"].flatMap({ UUID(uuidString: $0) })
+    else {
+      return response
+        .completed(status: .internalServerError)
+    }
+
+    guard let ballot = election.ballotMap[ballotIdentifier] else {
+      return response
+        .completed(status: .notFound)
+    }
+
+    guard
+      let bodyData = try? encoder.encode(ballot),
+      let bodyString = String(data: bodyData, encoding: .utf8)
+    else {
+      return response
+        .completed(status: .internalServerError)
+    }
+
+    response
+      .appendBody(string: bodyString)
+      .completed()
+  }
+
   electionRoutes.add(ballotRoutes);
 
   routes.add(electionRoutes)
