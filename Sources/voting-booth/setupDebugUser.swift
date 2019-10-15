@@ -10,8 +10,8 @@ func setupDebugUser() {
     for: user,
     titled: "Do it!",
     asking: "Should we do it?",
-    from: Date(timeIntervalSinceReferenceDate: 5.0e8),
-    to: Date(timeIntervalSinceReferenceDate: 6.0e8)
+    from: Date(timeIntervalSinceNow: 10.0),
+    to: Date(timeIntervalSinceNow: 3600.0)
   )
   election.addBallot(named: "Do it?", with: Candidate(named: "Yes"), Candidate(named: "No"))
 
