@@ -32,3 +32,19 @@ public extension Election {
   }
 
 }
+
+public extension Ballot {
+
+  struct DecodingData: Decodable {
+    let name: String
+    let candidates: [String]
+  }
+
+  init(decoding data: DecodingData) {
+    self.init(
+      name: data.name,
+      candidates: data.candidates.map { Candidate(named: $0) }
+    )
+  }
+
+}
