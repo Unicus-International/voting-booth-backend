@@ -41,7 +41,7 @@ public class Election {
   let comptrollers: [User]
 
   var candidates: [Candidate] {
-    return self.ballots.flatMap { $0.candidates }
+    ballots.flatMap { $0.candidates }
   }
 
   var franchises: [Franchise] = []
@@ -103,7 +103,7 @@ public class Election {
   }
 
   public var encodingData: EncodingData {
-    return EncodingData(
+    EncodingData(
       identifier: identifier,
       name: name,
       question: question,
@@ -114,25 +114,32 @@ public class Election {
   }
 
   public var isOpen: Bool {
-    return runs.contains(Date())
+    runs.contains(Date())
+  }
+
+  public var canAddBallots: Bool {
+    !isOpen
   }
 
   public var listData: ListData {
-    return ListData(identifier: identifier, name: name)
+    ListData(identifier: identifier, name: name)
+  }
+
+  public func addBallot(_ ballot: Ballot) -> Bool {
+    if (canAddBallots) {
+      ballots.append(ballot)
+    }
+
+    return canAddBallots
+  }
+
+  func addBallot(named name: String, with candidates: [Candidate]) -> Bool {
+    addBallot(Ballot(name: name, candidates: candidates))
   }
 
   @discardableResult
-  public func addBallot(named name: String, with candidates: [Candidate]) -> Ballot {
-    let ballot = Ballot(name: name, candidates: candidates)
-
-    self.ballots.append(ballot)
-
-    return ballot
-  }
-
-  @discardableResult
-  public func addBallot(named name: String, with candidates: Candidate...) -> Ballot {
-    return self.addBallot(named: name, with: candidates)
+  public func addBallot(named name: String, with candidates: Candidate...) -> Bool {
+    addBallot(named: name, with: candidates)
   }
 
 }
@@ -145,11 +152,11 @@ extension Election {
   }
 
   public static func fetch(_ identifier: UUID) -> Election? {
-    return elections[identifier]
+    elections[identifier]
   }
 
   public static var allFranchises: [UUID:Franchise] {
-    return elections
+    elections
       .values
       .flatMap { $0.franchiseMap }
       .reduce(into: [:]) { $0[$1.0] = $1.1 }
