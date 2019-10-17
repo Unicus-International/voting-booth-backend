@@ -36,16 +36,19 @@ func electionRoutes() -> Routes {
       let postBodyData = request.postBodyString?.data(using: .utf8),
       let electionData = try? decoder.decode(Election.DecodingData.self, from: postBodyData)
     else {
+      Log.debug(message: "Commissioning election failed due to malformed request body")
       return response
         .completed(status: .badRequest)
     }
 
     let election = Election(for: user, decodingData: electionData)
+    Log.info(message: "New election commissioned: \(electionData)")
 
     guard
       let bodyData = try? encoder.encode(election.encodingData),
       let bodyString = String(data: bodyData, encoding: .utf8)
     else {
+      Log.warning(message: "Encoding of election data failed")
       return response
         .completed(status: .internalServerError)
     }
@@ -65,6 +68,7 @@ func electionRoutes() -> Routes {
       let bodyData = try? encoder.encode(user.commissioned.map({ $0.listData })),
       let bodyString = String(data: bodyData, encoding: .utf8)
     else {
+      Log.warning(message: "Encoding of list data failed")
       return response
         .completed(status: .internalServerError)
     }
@@ -82,6 +86,7 @@ func electionRoutes() -> Routes {
       let session = request.scratchPad["session"] as? Session,
       let user = session.user
     else {
+      Log.warning(message: "Propagation of session and user data failed")
       return response
         .completed(status: .internalServerError)
     }
@@ -91,6 +96,7 @@ func electionRoutes() -> Routes {
         .flatMap({ UUID(uuidString: $0) })
         .flatMap({ user.commissioned(election: $0) })
     else {
+      Log.debug(message: "Election not found")
       return response
         .completed(status: .notFound)
     }
@@ -110,6 +116,7 @@ func electionRoutes() -> Routes {
       let bodyData = try? encoder.encode(election.encodingData),
       let bodyString = String(data: bodyData, encoding: .utf8)
     else {
+      Log.warning(message: "Encoding of election data failed")
       return response
         .completed(status: .internalServerError)
     }
@@ -136,6 +143,7 @@ func electionRoutes() -> Routes {
       let bodyData = try? encoder.encode(election.ballotNames),
       let bodyString = String(data: bodyData, encoding: .utf8)
     else {
+      Log.warning(message: "Encoding of list data failed")
       return response
         .completed(status: .internalServerError)
     }
@@ -149,15 +157,17 @@ func electionRoutes() -> Routes {
   ballotRoutes.add(method: .get, uri: "/{ballot}/list") {
     request, response in
 
-    guard
-      let election = request.scratchPad["election"] as? Election,
-      let ballotIdentifier = request.urlVariables["ballot"].flatMap({ UUID(uuidString: $0) })
-    else {
+    guard let election = request.scratchPad["election"] as? Election else {
+      Log.warning(message: "Propagation of election data failed")
       return response
         .completed(status: .internalServerError)
     }
 
-    guard let ballot = election.ballotMap[ballotIdentifier] else {
+    guard
+      let ballotIdentifier = request.urlVariables["ballot"].flatMap({ UUID(uuidString: $0) }),
+      let ballot = election.ballotMap[ballotIdentifier]
+    else {
+      Log.debug(message: "Ballot not found")
       return response
         .completed(status: .notFound)
     }
@@ -166,6 +176,7 @@ func electionRoutes() -> Routes {
       let bodyData = try? encoder.encode(ballot),
       let bodyString = String(data: bodyData, encoding: .utf8)
     else {
+      Log.warning(message: "Encoding of ballot data failed")
       return response
         .completed(status: .internalServerError)
     }
@@ -182,6 +193,7 @@ func electionRoutes() -> Routes {
     guard
       let election = request.scratchPad["election"] as? Election
     else {
+      Log.warning(message: "Propagation of election data failed")
       return response
         .completed(status: .internalServerError)
     }
@@ -190,6 +202,7 @@ func electionRoutes() -> Routes {
       let postBodyData = request.postBodyString?.data(using: .utf8),
       let decodingData = try? decoder.decode(Ballot.DecodingData.self, from: postBodyData)
     else {
+      Log.debug(message: "Creation of new ballot failed due to malformed request body")
       return response
         .completed(status: .badRequest)
     }
@@ -199,14 +212,18 @@ func electionRoutes() -> Routes {
     guard
       election.addBallot(ballot)
     else {
+      Log.debug(message: "New ballot could not be added")
       return response
         .completed(status: .conflict)
     }
+
+    Log.info(message: "New ballot created: \(decodingData)")
 
     guard
       let bodyData = try? encoder.encode(ballot),
       let bodyString = String(data: bodyData, encoding: .utf8)
     else {
+      Log.warning(message: "Encoding of ballot data failed")
       return response
         .completed(status: .internalServerError)
     }
