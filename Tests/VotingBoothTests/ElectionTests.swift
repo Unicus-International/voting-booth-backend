@@ -108,9 +108,16 @@ final class ElectionTests: XCTestCase {
       for: user,
       titled: "Election!",
       asking: "Question?",
-      from: Date(timeIntervalSinceNow: -3600.0), to: Date(timeIntervalSinceNow: 3600.0)
+      from: Date(timeIntervalSinceNow: -3600.0), to: Date(timeIntervalSinceNow: 3600.0),
+      ballots: [Ballot(decoding: Ballot.DecodingData(name: "Ballot", candidates: ["Yes", "No"]))]
     )
-    let ballot = election.addBallot(named: "Ballot", with: Candidate(named: "Yes"), Candidate(named: "No"))
+
+    guard
+      let ballot = election.ballots.first
+    else {
+      return XCTAssert(false, "Election not created with ballot.")
+    }
+
     election.generateFranchises(1)
     let franchise = election.franchises.first!
 
@@ -139,9 +146,16 @@ final class ElectionTests: XCTestCase {
       titled: "Election!",
       asking: "Question?",
       from: Date(timeIntervalSinceNow: -3600.0), to: Date(timeIntervalSinceNow: 3600.0),
+      ballots: [Ballot(decoding: Ballot.DecodingData(name: "Ballot", candidates: ["Yes", "No"]))],
       updatableVotes: false
     )
-    let ballot = election.addBallot(named: "Ballot", with: Candidate(named: "Yes"), Candidate(named: "No"))
+
+    guard
+      let ballot = election.ballots.first
+    else {
+      return XCTAssert(false, "Election not created with ballot.")
+    }
+
     election.generateFranchises(1)
     let franchise = election.franchises.first!
 

@@ -25,6 +25,7 @@ public class Election {
     name: String,
     question: String,
     runs: Range<Date>,
+    ballots: [Ballot] = [],
     updatableVotes: Bool,
     commissioner: User,
     comptrollers: [User] = []
@@ -33,6 +34,7 @@ public class Election {
     self.question = question
 
     self.runs = runs
+    self.ballots = ballots
     self.updatableVotes = updatableVotes
 
     self.commissioner = commissioner
@@ -53,12 +55,14 @@ public class Election {
     asking question: String,
     from: Date,
     to: Date,
+    ballots: [Ballot] = [],
     updatableVotes: Bool = true
   ) {
     self.init(
       name: name,
       question: question,
       runs: from..<to,
+      ballots: ballots,
       updatableVotes: updatableVotes,
       commissioner: commissioner,
       comptrollers: comptrollers

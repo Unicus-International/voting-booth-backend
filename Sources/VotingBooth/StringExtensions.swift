@@ -6,14 +6,14 @@ public extension String {
     range(of: Self.emailRegEx, options: .regularExpression) != nil
   }
 
-  var canonicalEmailAddress: String {
+  var canonicalEmailAddress: String? {
     if (self.isLikelyEmail) {
       let splitAddress = self.lowercased().split(separator: "@")
       let splitUsername = splitAddress.first!.split(separator: "+")
 
       return "\(splitUsername.first!)@\(splitAddress.last!)"
     } else {
-      return self
+      return nil
     }
   }
 

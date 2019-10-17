@@ -3,7 +3,7 @@ import PerfectCrypto
 import VotingBooth
 
 func hashPassword(_ password: String) -> String {
-  return (password.digest(.sha256)?.encode(.base64).flatMap { String(validatingUTF8: $0) })!
+  (password.digest(.sha256)?.encode(.base64).flatMap { String(validatingUTF8: $0) })!
 }
 
 func makeSalt() -> String {
@@ -17,7 +17,7 @@ extension User {
   static var users: [String:User] = [:]
 
   static func fetch(emailAddress: String) -> User? {
-    return users[emailAddress.canonicalEmailAddress]
+    emailAddress.canonicalEmailAddress.flatMap { users[$0] }
   }
 
   private static func register(_ user: User) {

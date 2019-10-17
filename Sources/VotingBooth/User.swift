@@ -42,7 +42,7 @@ public class User: Codable {
   }
 
   public var canonicalEmailAddress: String {
-    emailAddress.canonicalEmailAddress
+    emailAddress.canonicalEmailAddress!
   }
 
   var commissionedElections: [Election] = []
