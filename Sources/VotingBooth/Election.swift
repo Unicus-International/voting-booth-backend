@@ -157,6 +157,7 @@ public extension Election {
 }
 
 extension Election {
+
   private static var elections: [UUID:Election] = [:]
 
   private static func register(_ election: Election) {
@@ -173,4 +174,5 @@ extension Election {
       .flatMap { $0.franchiseMap }
       .reduce(into: [:]) { $0[$1.0] = $1.1 }
   }
+
 }

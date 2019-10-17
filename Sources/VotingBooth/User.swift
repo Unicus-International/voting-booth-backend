@@ -81,7 +81,9 @@ public class User: Codable {
 }
 
 extension User: Equatable {
+
   public static func == (_ lhs: User, _ rhs: User) -> Bool {
     return lhs.emailAddress == rhs.emailAddress
   }
+
 }
