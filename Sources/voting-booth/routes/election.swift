@@ -2,9 +2,12 @@ import Foundation
 
 import PerfectHTTP
 
+import PerfectLib
+
 import VotingBooth
 
 func electionRoutes() -> Routes {
+  Log.info(message: "Initializing base route /elections")
   var routes = Routes(baseUri: "/elections") {
     request, response in
 
@@ -23,6 +26,7 @@ func electionRoutes() -> Routes {
       .next()
   }
 
+  Log.info(message: "Initializing route /elections/commission")
   routes.add(method: .post, uri: "/commission") {
     request, response in
 
@@ -51,6 +55,7 @@ func electionRoutes() -> Routes {
       .completed(status: .created)
   }
 
+  Log.info(message: "Initializing route /elections/list")
   routes.add(method: .get, uri: "list") {
     request, response in
 
@@ -69,6 +74,7 @@ func electionRoutes() -> Routes {
       .completed()
   }
 
+  Log.info(message: "Initializing base route /elections/{election}")
   var electionRoutes = Routes(baseUri: "/{election}") {
     request, response in
 
@@ -95,6 +101,7 @@ func electionRoutes() -> Routes {
       .next()
   }
 
+  Log.info(message: "Initializing route /elections/{election}/list")
   electionRoutes.add(method: .get, uri: "/list") {
     request, response in
 
@@ -112,6 +119,7 @@ func electionRoutes() -> Routes {
       .completed()
   }
 
+  Log.info(message: "Initializing base route /elections/{election}/ballots")
   var ballotRoutes = Routes(baseUri: "/ballots") {
     request, response in
 
@@ -119,6 +127,7 @@ func electionRoutes() -> Routes {
       .next();
   }
 
+  Log.info(message: "Initializing route /elections/{election}/ballots/list")
   ballotRoutes.add(method: .get, uri: "/list") {
     request, response in
 
@@ -136,6 +145,7 @@ func electionRoutes() -> Routes {
       .completed()
   }
 
+  Log.info(message: "Initializing route /elections/{election}/ballots/{ballot}/list")
   ballotRoutes.add(method: .get, uri: "/{ballot}/list") {
     request, response in
 
@@ -165,6 +175,7 @@ func electionRoutes() -> Routes {
       .completed()
   }
 
+  Log.info(message: "Initializing route /elections/{election}/ballots/new")
   ballotRoutes.add(method: .post, uri: "/new") {
     request, response in
 

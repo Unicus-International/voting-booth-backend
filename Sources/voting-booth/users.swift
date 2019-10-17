@@ -1,4 +1,5 @@
 import PerfectCrypto
+import PerfectLib
 
 import VotingBooth
 
@@ -36,6 +37,7 @@ extension User {
         hashingFunction: hashPassword
       )
     else {
+      Log.warning(message: "User '\(emailAddress)' could not be created")
       return false
     }
 
@@ -51,6 +53,7 @@ extension User {
     {
       return user
     } else {
+      Log.warning(message: "User '\(emailAddress)' could not be logged in")
       return nil
     }
   }

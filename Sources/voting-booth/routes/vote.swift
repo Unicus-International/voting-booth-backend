@@ -2,11 +2,15 @@ import Foundation
 
 import PerfectHTTP
 
+import PerfectLib
+
 import VotingBooth
 
 func voteRoutes() -> Routes {
+  Log.info(message: "Initializing base route /vote")
   var routes = Routes(baseUri: "/vote")
 
+  Log.info(message: "Initializing route GET /vote/{franchise}")
   routes.add(method: .get, uri: "/{franchise}") {
     request, response in
 
@@ -27,6 +31,7 @@ func voteRoutes() -> Routes {
       .completed()
   }
 
+  Log.info(message: "Initializing route POST /vote/{franchise}")
   routes.add(method: .post, uri: "/{franchise}") {
     request, response in
 

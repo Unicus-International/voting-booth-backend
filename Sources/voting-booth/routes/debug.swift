@@ -1,8 +1,11 @@
 import PerfectHTTP
 
+import PerfectLib
+
 import VotingBooth
 
 func debugRoutes() -> Routes {
+  Log.info(message: "Initializing base route /debug")
   var debugRoutes = Routes(baseUri: "/debug") {
     request, response in
 
@@ -16,6 +19,7 @@ func debugRoutes() -> Routes {
     #endif
   }
 
+  Log.info(message: "Initializing route /debug/franchises")
   debugRoutes.add(method: .get, uri: "/franchises") {
     request, response in
 
@@ -24,6 +28,7 @@ func debugRoutes() -> Routes {
       .completed()
   }
 
+  Log.info(message: "Initializing route /debug/sessions")
   debugRoutes.add(method: .get, uri: "/sessions") {
     request, response in
 

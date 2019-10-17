@@ -1,6 +1,8 @@
+import Foundation
+
 import PerfectHTTP
 
-import Foundation
+import PerfectLib
 
 import VotingBooth
 
@@ -14,8 +16,10 @@ extension Session {
 }
 
 func userRoutes() -> Routes {
+  Log.info(message: "Initializing base route /user")
   var userRoutes = Routes(baseUri: "/user")
 
+  Log.info(message: "Initializing route /user/register")
   userRoutes.add(method: .post, uri: "/register") {
     request, response in
 
@@ -54,6 +58,7 @@ func userRoutes() -> Routes {
       .completed(status: .created)
   }
 
+  Log.info(message: "Initializing route /user/login")
   userRoutes.add(method: .post, uri: "/login") {
     request, response in
 
@@ -78,6 +83,7 @@ func userRoutes() -> Routes {
     }
   }
 
+  Log.info(message: "Initializing route /user/logout")
   userRoutes.add(method: .get, uri: "/logout") {
     request, response in
 
