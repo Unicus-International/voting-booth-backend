@@ -38,11 +38,11 @@ public class User: Codable {
   }
 
   public var isRegisterable: Bool {
-    return passwordHash == nil
+    passwordHash == nil
   }
 
   public var canonicalEmailAddress: String {
-    return emailAddress.canonicalEmailAddress
+    emailAddress.canonicalEmailAddress
   }
 
   var commissionedElections: [Election] = []
@@ -83,7 +83,7 @@ public class User: Codable {
 extension User: Equatable {
 
   public static func == (_ lhs: User, _ rhs: User) -> Bool {
-    return lhs.emailAddress == rhs.emailAddress
+    lhs.emailAddress == rhs.emailAddress
   }
 
 }

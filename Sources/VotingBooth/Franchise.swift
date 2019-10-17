@@ -14,7 +14,7 @@ public extension Election {
   }
 
   var franchiseMap: [UUID:Franchise] {
-    return Dictionary(uniqueKeysWithValues: franchises.lazy.map { ($0.identifier, $0) })
+    Dictionary(uniqueKeysWithValues: franchises.lazy.map { ($0.identifier, $0) })
   }
 
 }

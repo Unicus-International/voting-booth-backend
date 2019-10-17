@@ -15,7 +15,7 @@ public extension Ballot {
   }
 
   var listData: ListData {
-    return ListData(name: name, identifier: identifier)
+    ListData(name: name, identifier: identifier)
   }
 
 }
@@ -23,12 +23,11 @@ public extension Ballot {
 public extension Election {
 
   var ballotMap: [UUID:Ballot] {
-    return Dictionary(uniqueKeysWithValues: ballots.lazy.map { ($0.identifier, $0) })
+    Dictionary(uniqueKeysWithValues: ballots.lazy.map { ($0.identifier, $0) })
   }
 
   var ballotNames: [Ballot.ListData] {
-    ballots
-      .map { $0.listData }
+    ballots.lazy.map { $0.listData }
   }
 
 }

@@ -12,7 +12,7 @@ public struct Candidate: Codable, Equatable {
 public extension Election {
 
   var candidateMap: [UUID:Candidate] {
-    return Dictionary(uniqueKeysWithValues: candidates.lazy.map { ($0.identifier, $0) })
+    Dictionary(uniqueKeysWithValues: candidates.lazy.map { ($0.identifier, $0) })
   }
 
 }
