@@ -1,32 +1,6 @@
 import Foundation
 
 public class Election {
-  public struct EncodingData: Encodable {
-    let identifier: UUID
-
-    let name: String
-    let question: String
-
-    let runs: Range<Date>
-
-    let ballots: [Ballot]
-    let updatableVotes: Bool
-  }
-
-  public struct ListData: Encodable {
-    let identifier: UUID
-    let name: String
-  }
-
-  public struct DecodingData: Decodable {
-    let name: String
-    let question: String
-
-    let runs: Range<Date>
-
-    let updatableVotes: Bool
-  }
-
   let identifier = UUID()
 
   let name: String
@@ -91,38 +65,12 @@ public class Election {
     )
   }
 
-  public convenience init(for commissioner: User, with comptrollers: [User] = [], decodingData: DecodingData) {
-    self.init(
-      name: decodingData.name,
-      question: decodingData.question,
-      runs: decodingData.runs,
-      updatableVotes: decodingData.updatableVotes,
-      commissioner: commissioner,
-      comptrollers: comptrollers
-    )
-  }
-
-  public var encodingData: EncodingData {
-    EncodingData(
-      identifier: identifier,
-      name: name,
-      question: question,
-      runs: runs,
-      ballots: ballots,
-      updatableVotes: updatableVotes
-    )
-  }
-
   public var isOpen: Bool {
     runs.contains(Date())
   }
 
   public var canAddBallots: Bool {
     !isOpen
-  }
-
-  public var listData: ListData {
-    ListData(identifier: identifier, name: name)
   }
 
   public func addBallot(_ ballot: Ballot) -> Bool {
@@ -144,8 +92,72 @@ public class Election {
 
 }
 
+public extension Election {
+
+  struct EncodingData: Encodable {
+    let identifier: UUID
+
+    let name: String
+    let question: String
+
+    let runs: Range<Date>
+
+    let ballots: [Ballot]
+    let updatableVotes: Bool
+  }
+
+  var encodingData: EncodingData {
+    EncodingData(
+      identifier: identifier,
+      name: name,
+      question: question,
+      runs: runs,
+      ballots: ballots,
+      updatableVotes: updatableVotes
+    )
+  }
+
+}
+
+public extension Election {
+
+  struct DecodingData: Decodable {
+    let name: String
+    let question: String
+
+    let runs: Range<Date>
+
+    let updatableVotes: Bool
+  }
+
+  convenience init(for commissioner: User, with comptrollers: [User] = [], decodingData: DecodingData) {
+    self.init(
+      name: decodingData.name,
+      question: decodingData.question,
+      runs: decodingData.runs,
+      updatableVotes: decodingData.updatableVotes,
+      commissioner: commissioner,
+      comptrollers: comptrollers
+    )
+  }
+
+}
+
+public extension Election {
+
+  struct ListData: Encodable {
+    let identifier: UUID
+    let name: String
+  }
+
+  var listData: ListData {
+    ListData(identifier: identifier, name: name)
+  }
+
+}
+
 extension Election {
-  static var elections: [UUID:Election] = [:]
+  private static var elections: [UUID:Election] = [:]
 
   private static func register(_ election: Election) {
     elections[election.identifier] = election
