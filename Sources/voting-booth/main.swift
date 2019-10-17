@@ -19,7 +19,13 @@ let decoder = JSONDecoder()
 decoder.dateDecodingStrategy = .iso8601
 
 Log.debug(message: "Initializing routes")
-var routes = Routes()
+var routes = Routes() {
+  request, response in
+
+  Log.info(message: "\(request.method) \(request.uri)")
+  response
+    .next()
+}
 
 #if DEBUG
 Log.debug(message: "Creating fake user")
