@@ -19,6 +19,7 @@ func voteRoutes() -> Routes {
         .flatMap({ UUID(uuidString: $0) })
         .flatMap({ Election.allFranchises[$0] })
     else {
+      Log.debug(message: "Franchise not found")
       return response.completed(status: .notFound)
     }
 
@@ -40,6 +41,7 @@ func voteRoutes() -> Routes {
         .flatMap({ UUID(uuidString: $0) })
         .flatMap({ Election.allFranchises[$0] })
     else {
+      Log.debug(message: "Franchise not found")
       return response.completed(status: .notFound)
     }
 
@@ -47,14 +49,18 @@ func voteRoutes() -> Routes {
       let bodyData = request.postBodyString?.data(using: .utf8),
       let voteData = try? decoder.decode(Vote.CodingData.self, from: bodyData)
     else {
+      Log.debug(message: "Vote could not be entered due to malformed request body")
       return response.completed(status: .badRequest)
     }
 
     let (result, status) = franchise.castVote(data: voteData)
 
     if !result {
+      Log.debug(message: "Casting vote failed with status \(status)")
       response
         .setHeader(.contentType, value: "application/json")
+    } else {
+      Log.debug(message: "Casting vote succeeded with status \(status)")
     }
 
     switch (status) {
