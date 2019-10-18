@@ -76,19 +76,20 @@ func userRoutes() -> Routes {
       return response.completed(status: .badRequest)
     }
 
-    if let user = User.login(emailAddress: username, password: password) {
-      let session = Session()
-
-      session.set(user.canonicalEmailAddress, for: "USER_IDENTIFIER")
-
-      return response
-        .addHeader(.custom(name: "X-Session-Id"), value: session.identifier.uuidString)
-        .completed(status: .noContent)
-    } else {
+    guard let user = User.login(emailAddress: username, password: password) else {
       Log.info(message: "Failed login attempt for user: \(username)")
       return response
         .completed(status: .forbidden)
     }
+
+    let session = Session()
+    session.set(user.canonicalEmailAddress, for: "USER_IDENTIFIER")
+
+    Log.info(message: "Logged in user: \(username)")
+
+    response
+      .addHeader(.custom(name: "X-Session-Id"), value: session.identifier.uuidString)
+      .completed(status: .noContent)
   }
 
   Log.info(message: "Initializing route /user/logout")
